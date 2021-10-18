@@ -34,7 +34,7 @@ Why are analyzing MLB data?
 There is a surplus of raw data from the MLB dating back 1876 which gives us plenty of statistics to look at.  We think this plethora of data could yield some beutiful displays of historical statistics as well as fun ways to predict awardees through various models.
 
 How do we know if we'll be successful?
-A functioninig website with displays of our findings, interactivity of the website and a user, and making the class go "WOW!"
+A functioning website with displays of our findings, interactivity of the website and a user, and making the class go "WOW!"
 
 
 
