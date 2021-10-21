@@ -1,0 +1,109 @@
+---
+title: "Scrap Reference"
+author: "Aaron Simot"
+date: "10/14/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Loading various libraries
+```{r loads, include=FALSE}
+library(rvest)
+library(tidyverse)
+```
+
+
+
+Below is the test to extract a table from the defnied URL, but using the team standard batting reference
+```{r dataframe_set, message=FALSE, include = FALSE}
+newurl <- read_html("https://www.baseball-reference.com/leagues/majors/2020-standard-batting.shtml")
+
+#Team Standard Batting 2020
+tester <- newurl %>%
+  #retrieve elements with table in HTML
+  html_elements('table') %>%
+  #create a table from HTML
+  html_table()
+
+tail(tester)
+
+```
+
+
+Define a function to automate extracts for team standard batting
+```{r auto_extract_team}
+
+#input parameter is URL that is to be scraped
+url_reads <- function(x) {
+  #declare result as returned dataframe of team batting standards 
+  result <- x %>% 
+    read_html() %>% 
+    html_elements('table') %>%
+    html_table() #%>%
+    #mutate(year = str_sub(start = str_locate(x, "majors/"), end = str_sub(start = str_locate(x, "majors/") + 4)))
+  #result was saved as a list with dataframe at index1, pipe that into mutate
+  result <- result[[1]] %>%
+    #adding a year column based on the input URL and extract the eyar from the URL with regex and sending char to numeric
+    mutate(year = as.numeric(str_sub(x, start = str_locate(x, "\\d\\d\\d\\d"), end = str_locate(x, "standard"))))
+  result
+}
+
+# Tried this and was not working properly -> something wrong with the filter before for loop
+# url_reads <- function(x) {
+#   #initial load frame -- need a frame to start to bind to 
+#   result <- x[1] %>% 
+#     read_html() %>% 
+#     html_elements('table') %>%
+#     html_table()
+#   
+#   #start at index two since we initialized on index one
+#   result2 <- result %>% filter(is.na(Tm))
+#   for (i in 2:length(x)) {
+#     #loop over array of urls for each each year 
+#     result2 <- x[i] %>%
+#       read_html() %>%
+#       html_elements('table') %>%
+#       html_table() %>%
+#     
+#     result <- rbind(result, result2) #bind results to initial frame
+#     
+#   }
+# }
+
+```
+
+
+```{r define_df, message = FALSE}
+#vector of all record years
+years <- as.character(c(1876:2020))
+
+#vector of years to test design, subset of years vector
+test_years <- as.character(c(2010:2020))
+
+#list of 
+team_urls <- str_c("https://www.baseball-reference.com/leagues/majors/",test_years,"-standard-batting.shtml")
+
+teams_batting <- map_df(team_urls, url_reads)
+
+
+```
+
+
+
+
+```{r}
+y <- "https://www.baseball-reference.com/leagues/majors/2020-standard-batting.shtml"
+
+
+test2020 <- url_reads(y)
+test2020
+```
+
+
+
+
+
