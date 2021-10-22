@@ -48,7 +48,10 @@ url_reads <- function(x) {
   #result was saved as a list with dataframe at index1, pipe that into mutate
   result <- result[[1]] %>%
     #adding a year column based on the input URL and extract the year from the URL with regex and sending char to numeric
-    mutate(year = as.numeric(str_sub(x, start = str_locate(x, "\\d\\d\\d\\d"), end = str_locate(x, "standard"))))
+    #casting all columns to be characters.  Had merging frames issue where column types did not agree, character is best way to rpeserve integrity and easily revertible in later cleaning steps - Aaron 10/22
+    mutate(year = as.numeric(str_sub(x, start = str_locate(x, "\\d\\d\\d\\d"), end = str_locate(x, "standard"))),
+           across(everything(), as.character)) 
+  
   result #return the result dataframe from URL _x_
 }
 
@@ -80,8 +83,8 @@ Code chunk to create vector of URLs to scrape based on years vector.  Applies ma
 ```{r define_df, message = FALSE}
 #vector of all record years to scrape
 #there is an issue with a year 1960-1964 where #Bat is char not numeric causing an issue in combining dataframes
-#Look into this later 10/21 - Aaron
-years <- as.character(c(1965:2020))
+#Look into this later 10/21 - Aaron [issue fixed 10/22 using char as all column types]
+years <- as.character(c(1900:2020))
 
 #vector of years to test design, subset of years vector
 #no longer needed, testing is completed
@@ -92,14 +95,14 @@ team_urls <- str_c("https://www.baseball-reference.com/leagues/majors/",years,"-
 
 #create new dataframe of all years extracted using map_df to specify vector or URLs and function (url_reads) to apply
 teams_batting <- map_df(team_urls, url_reads)
-# Around 20 second execution time for years 1965-2020
+# Around 40 second execution time for years 1900-2020
 
 ```
 
 ```{r export_data}
 
 #export the team batting standard dataframe to a csv
-write_csv2(teams_batting, here::here('teamsBattingStandards1965_2020'))
+write_csv2(teams_batting, here::here('teamsBattingStandards1900_2020'))
 
 ```
 
