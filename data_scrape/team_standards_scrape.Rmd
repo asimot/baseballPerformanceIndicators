@@ -18,7 +18,7 @@ library(tidyverse)
 
 
 
-Below is the test to extract a table from the defnied URL, but using the team standard batting reference
+Below is the test to extract a table from the defined URL, but using the team standard batting reference
 ```{r dataframe_set, message=FALSE, include = FALSE}
 newurl <- read_html("https://www.baseball-reference.com/leagues/majors/2020-standard-batting.shtml")
 
@@ -35,21 +35,21 @@ tail(tester)
 
 
 Define a function to automate extracts for team standard batting
-```{r auto_extract_team}
+```{r auto_extract_team, message=FALSE}
 
-#input parameter is URL that is to be scraped
+#input parameter _x_ is a URL to be scraped
 url_reads <- function(x) {
   #declare result as returned dataframe of team batting standards 
   result <- x %>% 
-    read_html() %>% 
-    html_elements('table') %>%
-    html_table() #%>%
-    #mutate(year = str_sub(start = str_locate(x, "majors/"), end = str_sub(start = str_locate(x, "majors/") + 4)))
+    read_html() %>% #read the url string to HTML
+    html_elements('table') %>% #read the elements with reference table
+    html_table() #create table
+  
   #result was saved as a list with dataframe at index1, pipe that into mutate
   result <- result[[1]] %>%
-    #adding a year column based on the input URL and extract the eyar from the URL with regex and sending char to numeric
+    #adding a year column based on the input URL and extract the year from the URL with regex and sending char to numeric
     mutate(year = as.numeric(str_sub(x, start = str_locate(x, "\\d\\d\\d\\d"), end = str_locate(x, "standard"))))
-  result
+  result #return the result dataframe from URL _x_
 }
 
 # Tried this and was not working properly -> something wrong with the filter before for loop
@@ -76,30 +76,43 @@ url_reads <- function(x) {
 
 ```
 
-
+Code chunk to create vector of URLs to scrape based on years vector.  Applies map_df to our URL vector and the url_reads function to create a comprehensive list of team batting standards from 1876 to 2020
 ```{r define_df, message = FALSE}
-#vector of all record years
-years <- as.character(c(1876:2020))
+#vector of all record years to scrape
+#there is an issue with a year 1960-1964 where #Bat is char not numeric causing an issue in combining dataframes
+#Look into this later 10/21 - Aaron
+years <- as.character(c(1965:2020))
 
 #vector of years to test design, subset of years vector
-test_years <- as.character(c(2010:2020))
+#no longer needed, testing is completed
+#test_years <- as.character(c(2010:2020))
 
-#list of 
-team_urls <- str_c("https://www.baseball-reference.com/leagues/majors/",test_years,"-standard-batting.shtml")
+#list of URLS for Team Standard Batting tables
+team_urls <- str_c("https://www.baseball-reference.com/leagues/majors/",years,"-standard-batting.shtml")
 
+#create new dataframe of all years extracted using map_df to specify vector or URLs and function (url_reads) to apply
 teams_batting <- map_df(team_urls, url_reads)
+# Around 20 second execution time for years 1965-2020
 
+```
+
+```{r export_data}
+
+#export the team batting standard dataframe to a csv
+write_csv2(teams_batting, here::here('teamsBattingStandards1965_2020'))
 
 ```
 
 
 
-
-```{r}
+Frame to test url_reads function defined earlier
+```{r testing_returned_results, include = FALSE}
+#test URL
 y <- "https://www.baseball-reference.com/leagues/majors/2020-standard-batting.shtml"
 
-
+#Testing function call
 test2020 <- url_reads(y)
+#return result
 test2020
 ```
 
