@@ -1,0 +1,35 @@
+---
+title: "Exploring Data"
+author: "Aaron Simot"
+date: "10/25/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r libraries, include = FALSE}
+library(tidyverse)
+```
+
+```{r load_data, message = FALSE, include=FALSE}
+teamsBat <- read_csv2(here::here("data_dump/cleanTeamsBat1900_2020"))
+teamsPitch <- read_csv2(here::here("data_dump/cleanTeamsPitch1900_2020"))
+
+```
+
+
+```{r}
+teamsBat %>%
+  filter(year %in% c(2000:2020)) %>%
+  ggplot() + 
+  geom_boxplot(mapping = aes(x = BA, y = Tm))
+
+
+```
+
+
+
+
+
