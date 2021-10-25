@@ -48,7 +48,7 @@ url_reads <- function(x) {
   #result was saved as a list with dataframe at index1, pipe that into mutate
   result <- result[[1]] %>%
     #adding a year column based on the input URL and extract the year from the URL with regex and sending char to numeric
-    #casting all columns to be characters.  Had merging frames issue where column types did not agree, character is best way to rpeserve integrity and easily revertible in later cleaning steps - Aaron 10/22
+    #casting all columns to be characters.  Had merging frames issue where column types did not agree, character is best way to preserve integrity and easily revertible in later cleaning steps - Aaron 10/22
     mutate(year = as.numeric(str_sub(x, start = str_locate(x, "\\d\\d\\d\\d"), end = str_locate(x, "standard"))),
            across(everything(), as.character)) 
   
@@ -91,10 +91,10 @@ years <- as.character(c(1900:2020))
 #test_years <- as.character(c(2010:2020))
 
 #list of URLS for Team Standard Batting tables
-team_urls <- str_c("https://www.baseball-reference.com/leagues/majors/",years,"-standard-batting.shtml")
+team_urls_bat <- str_c("https://www.baseball-reference.com/leagues/majors/",years,"-standard-batting.shtml")
 
 #create new dataframe of all years extracted using map_df to specify vector or URLs and function (url_reads) to apply
-teams_batting <- map_df(team_urls, url_reads)
+teams_batting <- map_df(team_urls_bat, url_reads)
 # Around 40 second execution time for years 1900-2020
 
 ```
@@ -103,6 +103,24 @@ teams_batting <- map_df(team_urls, url_reads)
 
 #export the team batting standard dataframe to a csv
 write_csv2(teams_batting, here::here('teamsBattingStandards1900_2020'))
+
+```
+
+Code chunk for team pitching data
+```{R pitching_data}
+
+#array for URLs of teams pitching standards 1900-2020
+teams_urls_pit <- str_c("https://www.baseball-reference.com/leagues/majors/",years,"-standard-pitching.shtml")
+
+#mapping the teams pitching standard dataframe
+teams_pitching <- map_df(teams_urls_pit, url_reads)
+
+```
+
+
+```{R extract_pitch}
+#extracting teams pitching standards
+write_csv2(teams_pitching, here::here('teamsPitchingStandards1900_2020'))
 
 ```
 

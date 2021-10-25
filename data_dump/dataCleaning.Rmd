@@ -1,0 +1,82 @@
+---
+title: "TeamsCleaning"
+author: "Aaron Simot"
+date: "10/25/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{R libraries, include = FALSE}
+library(tidyverse)
+```
+
+
+```{R data_load_bat, include = FALSE}
+
+#reading in the teams batting standards data
+teamsBat <- read_csv2(here::here("data_dump/teamsBattingStandards1900_2020"))
+teamsPitch <- read_csv2(here::here("data_dump/teamsPitchingStandards1900_2020"))
+
+```
+
+
+
+```{R cleaning_bats}
+
+#selecting columns that need to be converted to numeric
+cols <- colnames(teamsBat)
+cols <- cols[2:30]
+
+#removing all the summary values for each year that was extracted
+cleanTeamsBat <- teamsBat %>%
+  filter(!is.na(Tm)) %>% #no null values for teams
+  filter(Tm != "League Average") %>% #no league average names in Team column
+  filter(Tm != "Tm") #repeating column name in rows
+
+#have to switch back char columns to numeric from initial scrape file
+#needed to convert all to char due to map_df issues thinking column names were datapoints
+cleanTeamsBat[cols] <- sapply(cleanTeamsBat[cols], as.numeric) #converting numeric cols back to numeric
+
+cleanTeamsBat
+
+```
+
+
+
+```{R clean_pitch}
+#selecting columns that need to be converted to numeric
+colsPitch <- colnames(teamsPitch)
+colsPitch <- cols[2:37]
+
+#removing all the summary values for each year that was extracted
+cleanTeamsPitch <- teamsPitch %>%
+  filter(!is.na(Tm)) %>% #no null values for teams
+  filter(Tm != "League Average") %>% #no league average names in Team column
+  filter(Tm != "Tm") #repeating column name in rows
+
+#have to switch back char columns to numeric from initial scrape file
+#needed to convert all to char due to map_df issues thinking column names were datapoints
+cleanTeamsPitch[colsPitch] <- sapply(cleanTeamsPitch[colsPitch], as.numeric) #converting numeric cols back to numeric
+
+cleanTeamsPitch
+
+```
+
+
+```{R exports}
+#exporting the partially cleaned teams batting data
+write_csv2(cleanTeamsBat, here::here("data_dump/cleanTeamsBat1900_2020"))
+
+#exporting the partially cleaned teams pitching data
+write_csv2(cleanTeamsPitch, here::here("data_dump/cleanTeamsPitch1900_2020"))
+```
+
+
+
+
+
+
+
