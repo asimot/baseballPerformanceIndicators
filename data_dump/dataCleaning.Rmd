@@ -32,9 +32,8 @@ cols <- cols[2:30]
 
 #removing all the summary values for each year that was extracted
 cleanTeamsBat <- teamsBat %>%
-  filter(!is.na(Tm)) %>% #no null values for teams
-  filter(Tm != "League Average") %>% #no league average names in Team column
-  filter(Tm != "Tm") #repeating column name in rows
+  #cleaning out some of the column headers and league averages saved as team data
+  filter(!is.na(Tm), Tm != "League Average", Tm != "Tm")
 
 #have to switch back char columns to numeric from initial scrape file
 #needed to convert all to char due to map_df issues thinking column names were datapoints
@@ -53,9 +52,8 @@ colsPitch <- cols[2:37]
 
 #removing all the summary values for each year that was extracted
 cleanTeamsPitch <- teamsPitch %>%
-  filter(!is.na(Tm)) %>% #no null values for teams
-  filter(Tm != "League Average") %>% #no league average names in Team column
-  filter(Tm != "Tm") #repeating column name in rows
+  #cleaning out some of the column headers and league averages saved as team data
+  filter(!is.na(Tm), Tm != "League Average", Tm != "Tm")
 
 #have to switch back char columns to numeric from initial scrape file
 #needed to convert all to char due to map_df issues thinking column names were datapoints
