@@ -48,7 +48,7 @@ url_reads <- function(x) {
   #result was saved as a list with dataframe at index1, pipe that into mutate
   result <- result[[1]] %>%
     #adding a year column based on the input URL and extract the year from the URL with regex and sending char to numeric
-    #casting all columns to be characters.  Had merging frames issue where column types did not agree, character is best way to preserve integrity and easily revertible in later cleaning steps - Aaron 10/22
+    #casting all columns to be characters.  Had merging frames issue where column types did not agree - Aaron 10/22
     mutate(year = as.numeric(str_sub(x, start = str_locate(x, "\\d\\d\\d\\d"), end = str_locate(x, "standard"))),
            across(everything(), as.character)) 
   
