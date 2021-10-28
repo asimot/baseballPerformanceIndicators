@@ -20,7 +20,8 @@ teamsPitch <- read_csv2(here::here("data_dump/cleanTeamsPitch1900_2020"))
 ```
 
 
-```{r}
+```{r, include=FALSE}
+#too many teams to display in one graph currently
 teamsBat %>%
   filter(year %in% c(2000:2020)) %>%
   ggplot() + 
@@ -29,7 +30,26 @@ teamsBat %>%
 
 ```
 
+```{r}
+
+test <- teamsBat %>%
+  filter(year >= 1960)
+
+teamnames <- unique(test$Tm)
+teamnames
+
+test %>% 
+  filter(str_starts(Tm, "Washington") | str_starts(Tm, "Montreal")) %>%
+  arrange(Tm)
+
+```
 
 
-
-
+Notable name chnges:
+  Tampa Bay Devil Rays -> Tampa Bay Rays
+  Los Angeles Angels -> California Angels -> Anaheim Angels -> Los Angles Angels of Anaheim -> Los Angles Angels
+  Montreal Expos -> Washington Nationals -> Washington Senators
+  Houston Colt .45s -> Houston Astros
+  Milwaukee Braves -> Atlanta Braves
+  Kansas City Athletics -> Oakland Athletics
+  Seattle Pilots -> Milwaukee Brewers
