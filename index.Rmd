@@ -1,0 +1,38 @@
+---
+title: "Baseball stats and awards"
+description: |
+  Welcome to the website. Look at all the baseball stats from 1960 to 2020 and the winner of major awards. 
+site: distill::distill_website
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(shiny)
+# Learn more about creating websites with Distill at:
+# https://rstudio.github.io/distill/website.html
+
+```
+
+```{r}
+library(shiny)
+
+#Shiny UI allows us to use navbar to make a title and tabs for the website
+shinyUI(navbarPage(title = "Baseball Stats",
+                   tabPanel("Teams")
+                   ,tabPanel("MVP",
+                             ("This is where you will find the MVPs over the year"))
+                   ,tabPanel("Cy young")
+                   ,tabPanel("Rookie of the year",),
+                   navbarMenu("Leagues",
+                   tabPanel("American League"),
+                   tabPanel("National League"))))
+
+
+```
+```{r}
+#Num1 = readline(prompt = "enter as year ")
+#Num1 = as.integer(Num1)
+#sum = Num1
+#print(sum)
+```
+

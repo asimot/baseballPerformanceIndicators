@@ -1,0 +1,11 @@
+---
+title: "About this site"
+description: |
+  Why we chose baseball awards
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+```
+

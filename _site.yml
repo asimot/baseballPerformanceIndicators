@@ -1,0 +1,14 @@
+name: "Baseball Awards"
+title: "418 Project"
+description: |
+  Baseball
+output_dir: "_site"
+navbar:
+  right:
+    - text: "Home"
+      href: index.html
+    - text: "About"
+      href: about.html
+    - text: "MVP"
+      href: MVP.html
+output: distill::distill_article
