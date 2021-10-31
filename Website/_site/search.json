@@ -1,0 +1,29 @@
+{
+  "articles": [
+    {
+      "path": "about.html",
+      "title": "About this site",
+      "description": "Why we chose baseball awards",
+      "author": [],
+      "contents": "\n\n\n\n",
+      "last_modified": "2021-10-29T01:14:47+00:00"
+    },
+    {
+      "path": "index.html",
+      "title": "Baseball stats and awards",
+      "description": "Welcome to the website. Look at all the baseball stats from 1960 to 2020 and the winner of major awards. \n",
+      "author": [],
+      "contents": "\n\n\n\nBaseball Stats\n\n\nTeams\n\n\nMVP\n\n\nCy young\n\n\nRookie of the year\n\n\n\nLeagues\n\n\n\nAmerican League\n\n\nNational League\n\n\n\n\n\n\nThis is where you will find the MVPs over the year\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+      "last_modified": "2021-10-29T01:14:48+00:00"
+    },
+    {
+      "path": "MVP.html",
+      "title": "MVP",
+      "description": "MVPs over the years in both leagues",
+      "author": [],
+      "contents": "\n\nenter as year \n[1] NA\n\n\n\n\n",
+      "last_modified": "2021-10-29T01:14:48+00:00"
+    }
+  ],
+  "collections": []
+}
