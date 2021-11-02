@@ -39,7 +39,7 @@ cleanTeamsBat <- teamsBat %>%
 #needed to convert all to char due to map_df issues thinking column names were datapoints
 cleanTeamsBat[cols] <- sapply(cleanTeamsBat[cols], as.numeric) #converting numeric cols back to numeric
 
-cleanTeamsBat
+#cleanTeamsBat
 
 ```
 
@@ -48,7 +48,7 @@ cleanTeamsBat
 ```{R clean_pitch}
 #selecting columns that need to be converted to numeric
 colsPitch <- colnames(teamsPitch)
-colsPitch <- cols[2:37]
+colsPitch <- colsPitch[2:37]
 
 #removing all the summary values for each year that was extracted
 cleanTeamsPitch <- teamsPitch %>%
@@ -59,9 +59,68 @@ cleanTeamsPitch <- teamsPitch %>%
 #needed to convert all to char due to map_df issues thinking column names were datapoints
 cleanTeamsPitch[colsPitch] <- sapply(cleanTeamsPitch[colsPitch], as.numeric) #converting numeric cols back to numeric
 
-cleanTeamsPitch
+#cleanTeamsPitch
 
 ```
+
+Notable name changes:
+  *Tampa Bay Devil Rays -> Tampa Bay Rays
+  *Los Angeles Angels -> California Angels -> Anaheim Angels -> Los Angeles Angels of Anaheim -> Los Angeles Angels
+  *Montreal Expos -> Washington Nationals -> Washington Senators
+  *Houston Colt .45s -> Houston Astros
+  *Milwaukee Braves -> Atlanta Braves
+  *Kansas City Athletics -> Oakland Athletics
+  *Seattle Pilots -> Milwaukee Brewers
+
+```{r name_changes}
+
+cleanTeamsBat <- cleanTeamsBat %>%
+  #retaining our desired year subset for displays
+  filter(year > 1960) %>%
+  #convert historic names to most recent names of teams
+  mutate(Tm = case_when(
+    Tm == "Tampa Bay Devil Rays" ~ "Tampa Bay Rays",
+    
+    Tm == "California Angels" ~ "Los Angeles Angels",
+    Tm == "Anaheim Angels" ~ "Los Angeles Angels",
+    Tm == "Los Angeles Angels of Anaheim" ~ "Los Angeles Angels",
+    Tm == "Los Angles Angels" ~ "Los Angeles Angels",
+    
+    Tm == "Montreal Expos" ~ "Washington Senators",
+    Tm == "Washington Nationals" ~ "Washington Senators",
+    Tm == "Houston Colt .45s" ~ "Houston Astros",
+    Tm == "Milwaukee Braves" ~ "Atlanta Braves",
+    Tm == "Kansas City Athletics" ~ "Oakland Athletics",
+    Tm == "Seattle Pilots" ~ "Milwaukee Brewers",
+    TRUE ~ Tm
+  ))
+
+cleanTeamsPitch <- cleanTeamsPitch %>%
+  #retaining our desired year subset for displays
+  filter(year > 1960) %>%
+  #convert historic names to most recent names of teams
+  mutate(Tm = case_when(
+    Tm == "Tampa Bay Devil Rays" ~ "Tampa Bay Rays",
+    
+    Tm == "California Angels" ~ "Los Angeles Angels",
+    Tm == "Anaheim Angels" ~ "Los Angeles Angels",
+    Tm == "Los Angeles Angels of Anaheim" ~ "Los Angeles Angels",
+    Tm == "Los Angles Angels" ~ "Los Angeles Angels",
+    
+    Tm == "Montreal Expos" ~ "Washington Senators",
+    Tm == "Washington Nationals" ~ "Washington Senators",
+    Tm == "Houston Colt .45s" ~ "Houston Astros",
+    Tm == "Milwaukee Braves" ~ "Atlanta Braves",
+    Tm == "Kansas City Athletics" ~ "Oakland Athletics",
+    Tm == "Seattle Pilots" ~ "Milwaukee Brewers",
+    TRUE ~ Tm
+  ))
+
+unique(cleanTeamsBat$Tm)
+
+```
+
+
 
 
 ```{R exports}
