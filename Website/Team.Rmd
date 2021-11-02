@@ -1,0 +1,32 @@
+
+---
+title: "Team Stats"
+description: |
+  Stats of MLB teams over the years
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+```
+
+
+```{r libraries, include = FALSE}
+library(tidyverse)
+```
+
+```{r load_data, message = FALSE, include=FALSE}
+#teamsBat <- read_csv2(here::here("~/STA 418/test/baseballPerformanceIndicators/data_dump"))
+#teamsPitch <- read_csv2(here::here("~/STA 418/test/baseballPerformanceIndicators/data_dump"))
+
+```
+
+
+```{r}
+#teamsBat %>%
+#  filter(year %in% c(2000:2020)) %>%
+ # ggplot() + 
+  #geom_boxplot(mapping = aes(x = BA, y = Tm))
+
+
+```

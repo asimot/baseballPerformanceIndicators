@@ -11,9 +11,9 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ```{r}
-Num1 = readline(prompt = "enter as year ")
-Num1 = as.integer(Num1)
-sum = Num1
-print(sum)
+var = readline(prompt = "Enter a Year ")
+var = as.integer(var)
+print(var)
+  
 ```
 
