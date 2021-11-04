@@ -9,8 +9,14 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r, include=FALSE}
+install.packages("hash")
+```
+
+
 ```{R libraries, include = FALSE}
 library(tidyverse)
+library(hash)
 ```
 
 
@@ -92,6 +98,7 @@ cleanTeamsBat <- cleanTeamsBat %>%
     Tm == "Milwaukee Braves" ~ "Atlanta Braves",
     Tm == "Kansas City Athletics" ~ "Oakland Athletics",
     Tm == "Seattle Pilots" ~ "Milwaukee Brewers",
+    Tm == "Florida Marlins" ~ "Miami Marlins",
     TRUE ~ Tm
   ))
 
@@ -113,13 +120,53 @@ cleanTeamsPitch <- cleanTeamsPitch %>%
     Tm == "Milwaukee Braves" ~ "Atlanta Braves",
     Tm == "Kansas City Athletics" ~ "Oakland Athletics",
     Tm == "Seattle Pilots" ~ "Milwaukee Brewers",
+    Tm == "Florida Marlins" ~ "Miami Marlins",
     TRUE ~ Tm
   ))
 
-unique(cleanTeamsBat$Tm)
+teamNames <- unique(cleanTeamsBat$Tm)
+teamNames
+```
+
+```{r dictionary_create}
+
+# Creating list of team name abbreviations
+abbrList <- c("BAL", "BOS", "CHC", "CWS", "CIN", "CLE", "DET", "OAK",
+              "LAA", "LAD", "MIN", "ATL", "NYY", "PHI", "PIT", "SF",
+              "STL", "WSH", "HOU", "NYM", "KC", "SD", "MIL", "TEX",
+              "SEA", "TOR", "COL", "MIA", "ARI", "TB")
+
+# Creating the dictionary to pair team names in full to their respective abbreviations
+teamDict <- hash(teamNames, abbrList)
 
 ```
 
+```{r apply_abbreviations}
+
+#teamDict[["Miami Marlins"]]
+
+#use dictionary to assign team name abbreviations based on Tm column for Bat table
+cleanTeamsBat <- cleanTeamsBat %>%
+  mutate(TmAbbr = values(teamDict, keys = Tm))
+
+#use dictionary to assign team name abbreviations based on Tm column for Pitch table
+cleanTeamsPitch <- cleanTeamsPitch %>%
+  mutate(TmAbbr = values(teamDict, keys = Tm))
+
+```
+
+
+
+```{r validation}
+# Reordering columns
+
+# Moving order to Team, year, everything else
+cleanTeamsBat <- cleanTeamsBat[,c(1,31, 30, 2:29)]
+
+# Moving order to be Team, year, everything else
+cleanTeamsPitch <- cleanTeamsPitch[, c(1, 38, 36, 2:35, 37)]
+
+```
 
 
 
