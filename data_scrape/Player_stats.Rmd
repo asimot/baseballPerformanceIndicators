@@ -1,0 +1,88 @@
+---
+title: "Player Data"
+output: html_notebook
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Loading various libraries
+```{r loads, include=FALSE}
+library(rvest)
+library(tidyverse)
+```
+
+
+```{r}
+#Define a function to automate extracts for team standard batting
+#input parameter _x_ is a URL to be scraped
+url_reads <- function(x) {
+  #declare result as returned dataframe of team batting standards 
+  result <- x %>% 
+    read_html() %>% #read the url string to HTML
+    html_nodes(xpath ='//*[@id="LeaderBoard1_dg1_ctl00"]') %>% #read the elements with reference table
+    html_table() #create table
+  
+  #result was saved as a list with dataframe at index1, pipe that into mutate
+  result <- result[[1]]
+    #adding a year column based on the input URL and extract the year from the URL with regex and sending char to numeric
+    #casting all columns to be characters.  Had merging frames issue where column types did not agree - Aaron 10/22
+    #mutate(year = as.numeric(str_sub(x, start = str_locate(x, "\\d\\d\\d\\d"), end = str_locate(x, "standard"))),
+          # across(everything(), as.character)) 
+  
+  result #return the result dataframe from URL _x_
+}
+```
+
+
+#Batting
+```{r}
+numrow <- as.character(c(1:162))
+
+#vector of years to test design, subset of years vector
+#no longer needed, testing is completed
+#test_years <- as.character(c(2010:2020))
+
+#list of URLS for Team Standard Batting tables
+#team_urls_bat <- str_c("https://www.baseball-reference.com/leagues/majors/",years,"-standard-batting.shtml")
+
+
+player_urls_bat <- str_c("https://www.fangraphs.com/leaders.aspx?pos=all&stats=bat&lg=all&qual=y&type=0&season=2020&month=0&season1=1960&ind=1&team=0&rost=0&age=0&filter=&players=0&startdate=&enddate=&page=",numrow,"_50")
+
+#create new dataframe of all years extracted using map_df to specify vector or URLs and function (url_reads) to apply
+player_batting <- map_df(player_urls_bat, url_reads)
+```
+
+
+```{R extract_batting}
+#extracting teams pitching standards
+write_csv2(player_batting, here::here('PlayerBattingStandards1960_2020'))
+
+```
+
+
+```{r}
+numrow <- as.character(c(1:99))
+
+player_urls_pit <- str_c("https://www.fangraphs.com/leaders.aspx?pos=all&stats=pit&lg=all&qual=y&type=8&season=2020&month=0&season1=1960&ind=1&team=0&rost=0&age=0&filter=&players=0&startdate=&enddate=&page=",numrow,"_50")
+
+#create new dataframe of all years extracted using map_df to specify vector or URLs and function (url_reads) to apply
+player_pitching <- map_df(player_urls_pit, url_reads)
+```
+
+```{r}
+#extracting teams pitching standards
+write_csv2(player_pitching, here::here('PlayerPitchingStandards1960_2020.csv'))
+```
+
+Frame to test url_reads function defined earlier
+```{r testing_returned_results, include = FALSE}
+#test URL
+y <- "https://www.baseball-reference.com/leagues/majors/2020-standard-batting.shtml"
+
+#Testing function call
+test2020 <- url_reads(y)
+#return result
+test2020
+```
