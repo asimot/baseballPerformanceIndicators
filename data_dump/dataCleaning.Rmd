@@ -106,7 +106,7 @@ abbrList <- c("BAL", "BOS", "CHC", "CWS", "CIN", "CLE", "DET", "KC",
 
 # Creating the dictionary to pair team names in full to their respective abbreviations
 teamDict <- hash(teamNames, abbrList)
-
+teamDict2 <- hash(abbrList, teamNames)
 # sort(abbrList)
 
 ```
@@ -149,11 +149,14 @@ write_csv2(cleanTeamsPitch, here::here("data_dump/cleanTeamsPitch1900_2020"))
 ```
 
 
-```{r}
+```{r, include = FALSE}
 MVPdata <- read_csv2(here::here("data_dump/MVP1960_2020"))
 CYdata <- read_csv2(here::here("data_dump/CY1960_2020"))
 Rookiedata <- read_csv2(here::here("data_dump/Rookie1960_2020"))
 ```
+
+
+
 
 ```{r}
 #Move the first row to be the col names
@@ -161,16 +164,45 @@ colnames(MVPdata) <-MVPdata[1,]
 # Getting rid of the first row, last col and years before 1960
 MVPC <- MVPdata[2:184,1:17]
 #Dropping the rows that have only NA
-MVPClean <- MVPC %>% drop_na(Year)
+MVPClean <- MVPC %>% 
+  drop_na(Year) %>%
+  filter(Year >= 1960) %>%
+  # Assigning standard team abbreviations
+  mutate(Tm = case_when(Tm == "CHW" ~ "CWS", 
+                        Tm == "WSN" ~ "WSH", 
+                        Tm == "SFG" ~ "SF",
+                        Tm == "SDP" ~ "SD", 
+                        Tm == "KCR" ~ "KC",
+                        TRUE ~ Tm)) %>%
+  # Applying dictionary to assign full team names
+  mutate(TmName = values(teamDict2, keys = Tm))
 
 ```
+
+
 
 ```{r}
 # Getting last col and years before 1960
 CYC <- CYdata[1:176,1:11]
 #Dropping the rows that have only NA
-CYClean <- CYC %>% drop_na(Year)
+CYClean <- CYC %>% 
+  drop_na(Year) %>%
+  filter(Year >= 1960) %>%
+  # Changing abbreviations to standard naming
+  mutate(Tm = case_when(Tm == "CHW" ~ "CWS", 
+                        Tm == "WSN" ~ "WSH", 
+                        Tm == "SFG" ~ "SF",
+                        Tm == "SDP" ~ "SD", 
+                        Tm == "KCR" ~ "KC",
+                        Tm == "TBR" ~ "TB", 
+                        Tm == "MON" ~ "MTL",
+                        TRUE ~ Tm)) %>%
+  # Applying dictionary to assign full team name based on abbreviations
+  mutate(TmName = values(teamDict2, keys = Tm))
+
 ```
+
+
 
 ```{r}
 #Move the first row to be the col names
@@ -178,8 +210,32 @@ colnames(Rookiedata) <-Rookiedata[1,]
 # Getting rid of the first row, last col and years before 1960
 RookieC <- Rookiedata[2:185,1:17]
 #Dropping the rows that have only NA
-RookieClean <- RookieC %>% drop_na(Year)
+RookieClean <- RookieC %>% 
+  drop_na(Year) %>%
+  filter(Year >= 1960) %>%
+  # Changing abbreviations to standard names
+  mutate(Tm = case_when(Tm == "CHW" ~ "CWS", 
+                        Tm == "WSN" ~ "WSH", 
+                        Tm == "SFG" ~ "SF",
+                        Tm == "SDP" ~ "SD", 
+                        Tm == "KCR" ~ "KC",
+                        Tm == "TBR" ~ "TB", 
+                        Tm == "MON" ~ "MTL",
+                        TRUE ~ Tm)) %>%
+  # Applying dictionary
+  mutate(TmName = values(teamDict2, keys = Tm))
 ```
+
+
+```{r}
+# Rearranging Columns
+MVPClean <- MVPClean[, c(1:4, 18, 5:17)]
+RookieClean <- RookieClean[, c(1:4, 18, 5:17)]
+CYClean <- CYClean[, c(1:4, 12, 5:11)]
+
+```
+
+
 
 ```{r}
 #exporting the Cleaned MVP stats
@@ -189,7 +245,7 @@ write_csv2(MVPClean, here::here("data_dump/MVPClean1960_2020"))
 write_csv2(CYClean, here::here("data_dump/CYClean1960_2020"))
 
 #exporting the cleaned Rookie stats
-write_csv2(RookiedClean, here::here("data_dump/RookieClean1960_2020"))
+write_csv2(RookieClean, here::here("data_dump/RookieClean1960_2020"))
 ```
 
 
