@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r, include=FALSE}
-install.packages("hash")
+#install.packages("hash")
 ```
 
 
@@ -142,10 +142,10 @@ cleanTeamsPitch <- cleanTeamsPitch[, c(1, 38, 36, 2:35, 37)]
 
 ```{R exports}
 #exporting the partially cleaned teams batting data
-write_csv2(cleanTeamsBat, here::here("data_dump/cleanTeamsBat1900_2020"))
+#write_csv2(cleanTeamsBat, here::here("data_dump/cleanTeamsBat1900_2020"))
 
 #exporting the partially cleaned teams pitching data
-write_csv2(cleanTeamsPitch, here::here("data_dump/cleanTeamsPitch1900_2020"))
+#write_csv2(cleanTeamsPitch, here::here("data_dump/cleanTeamsPitch1900_2020"))
 ```
 
 
@@ -235,7 +235,16 @@ CYClean <- CYClean[, c(1:4, 12, 5:11)]
 
 ```
 
+Adding in functionality to convert columns to numeric where necessary.  Same issue as team and player data as numeric data saved as characters.
+```{r}
+MVPClean %>%
+  mutate(WAR = as.numeric(WAR),
+         BA = as.numeric(BA),
+         OBP = as.numeric(OBP),
+         SLG = as.numeric(SLG))
 
+
+```
 
 ```{r}
 #exporting the Cleaned MVP stats

@@ -24,22 +24,44 @@ rook <- read_csv2(here::here("data_dump/RookieClean1960_2020"))
 
 ```
 
+Extract chr columns needing to be converted to numeric
+BA 7, OBP 8, SLG 9, 
+```{r}
+colChange <- function(x){
+  # Extract colnames of character columns to be converted to numeric
+  nameCols <- colnames(x)[6:ncol(x)]
+  # Convert to numeric based on col subset
+  x[nameCols] <- sapply(x[nameCols], as.numeric)
+  
+  # Return results
+  x
+}
+
+```
+
+```{r}
+# Applying column changing function to convert chr to numeric where needed
+mvp <- colChange(mvp)
+cyyoung <- colChange(cyyoung)
+rook <- colChange(rook)
+
+```
+
 
 ```{r}
 
-
-
-mvp %>%
-  mutate(YearCats = case_when(
-    between(Year, 1960, 1969) ~ "1960-1969",
-    between(Year, 1970, 1979) ~ "1970-1979",
-    between(Year, 1980, 1989) ~ "1980-1989",
-    between(Year, 1990, 1999) ~ "1990-1999",
-    between(Year, 2000, 2009) ~ "2000-2009",
-    between(Year, 2010, 2020) ~ "2010-2020"
-  )) #%>%
-  # ggplot() +
-  # geom_boxplot(mapping = aes(x = YearCats, y = BA))
+# mvp %>%
+#   filter(Year >= 1960) %>%
+#   mutate(YearCats = case_when(
+#     between(Year, 1960, 1969) ~ "1960-1969",
+#     between(Year, 1970, 1979) ~ "1970-1979",
+#     between(Year, 1980, 1989) ~ "1980-1989",
+#     between(Year, 1990, 1999) ~ "1990-1999",
+#     between(Year, 2000, 2009) ~ "2000-2009",
+#     between(Year, 2010, 2020) ~ "2010-2020"
+#   )) %>%
+#   ggplot() +
+#   geom_density(mapping = aes(x = Year, y = BA), na.rm = TRUE)
 
 
 ```
