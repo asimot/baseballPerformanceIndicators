@@ -147,8 +147,47 @@ write_csv2(cleanTeamsPitch, here::here("data_dump/cleanTeamsPitch1900_2020"))
 ```
 
 
+```{r}
+MVPdata <- read_csv2(here::here("data_dump/MVP1960_2020"))
+CYdata <- read_csv2(here::here("data_dump/CY1960_2020"))
+Rookiedata <- read_csv2(here::here("data_dump/Rookie1960_2020"))
+```
 
+```{r}
+#Move the first row to be the col names
+colnames(MVPdata) <-MVPdata[1,]
+# Getting rid of the first row, last col and years before 1960
+MVPC <- MVPdata[2:184,1:17]
+#Dropping the rows that have only NA
+MVPClean <- MVPC %>% drop_na(Year)
 
+```
 
+```{r}
+# Getting last col and years before 1960
+CYC <- CYdata[1:176,1:11]
+#Dropping the rows that have only NA
+CYClean <- CYC %>% drop_na(Year)
+```
+
+```{r}
+#Move the first row to be the col names
+colnames(Rookiedata) <-Rookiedata[1,]
+# Getting rid of the first row, last col and years before 1960
+RookieC <- Rookiedata[2:185,1:17]
+#Dropping the rows that have only NA
+RookieClean <- RookieC %>% drop_na(Year)
+```
+
+```{r}
+#exporting the Cleaned MVP stats
+write_csv2(MVPClean, here::here("data_dump/MVPClean1960_2020"))
+
+#exporting the cleaned Cy Young stats
+write_csv2(CYClean, here::here("data_dump/CYClean1960_2020"))
+
+#exporting the cleaned Rookie stats
+write_csv2(RookiedClean, here::here("data_dump/RookieClean1960_2020"))
+```
 
 
