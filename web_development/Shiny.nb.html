@@ -221,38 +221,56 @@ pre code {
 </div>
 <div id="load-data" class="section level1">
 <h1>Load data ——————————————————————–</h1>
-<p>load(&quot;&quot;)</p>
+<p>load(“MVPClean1960_2020.RData”) load(“CYClean1960_2020.RData”) load(“RookieClean1960_2020.RData”)</p>
 </div>
 <div id="define-ui" class="section level1">
 <h1>Define UI ——————————————————————–</h1>
-<p>ui &lt;- fluidPage( sidebarLayout( sidebarPanel( selectInput( inputId = “y”, label = “Y-axis:”, choices = c( “IMDB rating” = “imdb_rating”, “IMDB number of votes” = “imdb_num_votes”, “Critics Score” = “critics_score”, “Audience Score” = “audience_score”, “Runtime” = “runtime” ), selected = “audience_score” ),</p>
+<p>ui &lt;- fluidPage( sidebarLayout( sidebarPanel( selectInput( inputId = “y”, label = “Y-axis:”, choices = c( “Wins Above Replacement” = “WAR”, “Batting Average” = “BA”, “On Base Percentage” = “OPS”, “Slugging” = “SLG”, “Home Runs” = “HR” “Runs Batted In” = “RBI”, “Stolen Bases” = “SB”, “Wins” = “W”, “Loses” = “L”, “Saves” = “SV”, “Earn Run Average” = “ERA”, “Innings Pitched” = “IP”, “Strike Outs” = “SO”, ), selected = “WAR” ),</p>
 <pre><code>  selectInput(
     inputId = &quot;x&quot;,
-    label = &quot;X-axis:&quot;,
+    label = &quot;Season:&quot;,
     choices = c(
-      &quot;IMDB rating&quot; = &quot;imdb_rating&quot;,
-      &quot;IMDB number of votes&quot; = &quot;imdb_num_votes&quot;,
-      &quot;Critics Score&quot; = &quot;critics_score&quot;,
-      &quot;Audience Score&quot; = &quot;audience_score&quot;,
-      &quot;Runtime&quot; = &quot;runtime&quot;
+      &quot;Season&quot; = &quot;Year&quot;,
     ),
-    selected = &quot;critics_score&quot;
-  ),
-
-  selectInput(
-    inputId = &quot;z&quot;,
-    label = &quot;Color by:&quot;,
-    choices = c(
-      &quot;Title Type&quot; = &quot;title_type&quot;,
-      &quot;Genre&quot; = &quot;genre&quot;,
-      &quot;MPAA Rating&quot; = &quot;mpaa_rating&quot;,
-      &quot;Critics Rating&quot; = &quot;critics_rating&quot;,
-      &quot;Audience Rating&quot; = &quot;audience_rating&quot;
-    ),
-    selected = &quot;mpaa_rating&quot;
-  ),
-
-  sliderInput(
+    selected = &quot;Year&quot;
+  ),</code></pre>
+</div>
+<div id="selectinput" class="section level1">
+<h1>selectInput(</h1>
+</div>
+<div id="inputid-z" class="section level1">
+<h1>inputId = “z”,</h1>
+</div>
+<div id="label-color-by" class="section level1">
+<h1>label = “Color by:”,</h1>
+</div>
+<div id="choices-c" class="section level1">
+<h1>choices = c(</h1>
+</div>
+<div id="title-type-title_type" class="section level1">
+<h1>“Title Type” = “title_type”,</h1>
+</div>
+<div id="genre-genre" class="section level1">
+<h1>“Genre” = “genre”,</h1>
+</div>
+<div id="mpaa-rating-mpaa_rating" class="section level1">
+<h1>“MPAA Rating” = “mpaa_rating”,</h1>
+</div>
+<div id="critics-rating-critics_rating" class="section level1">
+<h1>“Critics Rating” = “critics_rating”,</h1>
+</div>
+<div id="audience-rating-audience_rating" class="section level1">
+<h1>“Audience Rating” = “audience_rating”</h1>
+</div>
+<div id="section" class="section level1">
+<h1>),</h1>
+</div>
+<div id="selected-mpaa_rating" class="section level1">
+<h1>selected = “mpaa_rating”</h1>
+</div>
+<div id="section-1" class="section level1">
+<h1>),</h1>
+<pre><code>  sliderInput(
     inputId = &quot;alpha&quot;,
     label = &quot;Alpha:&quot;,
     min = 0, max = 1,
@@ -268,15 +286,24 @@ pre code {
 
   textInput(
     inputId = &quot;plot_title&quot;,
-    label = &quot;Plot title&quot;,
-    placeholder = &quot;Enter text to be used as plot title&quot;
-  ),
-
-  actionButton(
-    inputId = &quot;update_plot_title&quot;,
-    label = &quot;Update plot title&quot;
-  )
-),
+    label = &quot;Player Stats&quot;,</code></pre>
+</div>
+<div id="placeholder-enter-text-to-be-used-as-plot-title" class="section level1">
+<h1>placeholder = “Enter text to be used as plot title”</h1>
+<pre><code>  ),</code></pre>
+</div>
+<div id="actionbutton" class="section level1">
+<h1>actionButton(</h1>
+</div>
+<div id="inputid-update_plot_title" class="section level1">
+<h1>inputId = “update_plot_title”,</h1>
+</div>
+<div id="label-update-plot-title" class="section level1">
+<h1>label = “Update plot title”</h1>
+</div>
+<div id="section-2" class="section level1">
+<h1>)</h1>
+<pre><code>),
 
 mainPanel(
   tags$br(),
@@ -288,7 +315,7 @@ mainPanel(
 <div id="define-server--" class="section level1">
 <h1>Define server —————————————————————-</h1>
 <p>server &lt;- function(input, output, session) { new_plot_title &lt;- eventReactive( eventExpr = input<span class="math inline">\(update_plot_title,  valueExpr = {  toTitleCase(input\)</span>plot_title) } )</p>
-<p>output<span class="math inline">\(scatterplot &lt;- renderPlot({  ggplot(data = movies, aes_string(x = input\)</span>x, y = input<span class="math inline">\(y, color = input\)</span>z)) + geom_point(alpha = input<span class="math inline">\(alpha, size = input\)</span>size) + labs(title = new_plot_title()) }) }</p>
+<p>output<span class="math inline">\(scatterplot &lt;- renderPlot({  ggplot(data = movies, aes_string(x = input\)</span>x, y = input<span class="math inline">\(y)) +  geom_point(alpha = input\)</span>alpha, size = input$size) + labs(title = new_plot_title()) }) }</p>
 </div>
 <div id="create-the-shiny-app-object" class="section level1">
 <h1>Create the Shiny app object ————————————————–</h1>
@@ -296,7 +323,7 @@ mainPanel(
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiU2hpbnkgQXBwIgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCiMgTG9hZCBwYWNrYWdlcyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgpsaWJyYXJ5KHNoaW55KQpsaWJyYXJ5KGdncGxvdDIpCmxpYnJhcnkodG9vbHMpCgojIExvYWQgZGF0YSAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKbG9hZCgiIikKCiMgRGVmaW5lIFVJIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgp1aSA8LSBmbHVpZFBhZ2UoCiAgc2lkZWJhckxheW91dCgKICAgIHNpZGViYXJQYW5lbCgKICAgICAgc2VsZWN0SW5wdXQoCiAgICAgICAgaW5wdXRJZCA9ICJ5IiwKICAgICAgICBsYWJlbCA9ICJZLWF4aXM6IiwKICAgICAgICBjaG9pY2VzID0gYygKICAgICAgICAgICJJTURCIHJhdGluZyIgPSAiaW1kYl9yYXRpbmciLAogICAgICAgICAgIklNREIgbnVtYmVyIG9mIHZvdGVzIiA9ICJpbWRiX251bV92b3RlcyIsCiAgICAgICAgICAiQ3JpdGljcyBTY29yZSIgPSAiY3JpdGljc19zY29yZSIsCiAgICAgICAgICAiQXVkaWVuY2UgU2NvcmUiID0gImF1ZGllbmNlX3Njb3JlIiwKICAgICAgICAgICJSdW50aW1lIiA9ICJydW50aW1lIgogICAgICAgICksCiAgICAgICAgc2VsZWN0ZWQgPSAiYXVkaWVuY2Vfc2NvcmUiCiAgICAgICksCgogICAgICBzZWxlY3RJbnB1dCgKICAgICAgICBpbnB1dElkID0gIngiLAogICAgICAgIGxhYmVsID0gIlgtYXhpczoiLAogICAgICAgIGNob2ljZXMgPSBjKAogICAgICAgICAgIklNREIgcmF0aW5nIiA9ICJpbWRiX3JhdGluZyIsCiAgICAgICAgICAiSU1EQiBudW1iZXIgb2Ygdm90ZXMiID0gImltZGJfbnVtX3ZvdGVzIiwKICAgICAgICAgICJDcml0aWNzIFNjb3JlIiA9ICJjcml0aWNzX3Njb3JlIiwKICAgICAgICAgICJBdWRpZW5jZSBTY29yZSIgPSAiYXVkaWVuY2Vfc2NvcmUiLAogICAgICAgICAgIlJ1bnRpbWUiID0gInJ1bnRpbWUiCiAgICAgICAgKSwKICAgICAgICBzZWxlY3RlZCA9ICJjcml0aWNzX3Njb3JlIgogICAgICApLAoKICAgICAgc2VsZWN0SW5wdXQoCiAgICAgICAgaW5wdXRJZCA9ICJ6IiwKICAgICAgICBsYWJlbCA9ICJDb2xvciBieToiLAogICAgICAgIGNob2ljZXMgPSBjKAogICAgICAgICAgIlRpdGxlIFR5cGUiID0gInRpdGxlX3R5cGUiLAogICAgICAgICAgIkdlbnJlIiA9ICJnZW5yZSIsCiAgICAgICAgICAiTVBBQSBSYXRpbmciID0gIm1wYWFfcmF0aW5nIiwKICAgICAgICAgICJDcml0aWNzIFJhdGluZyIgPSAiY3JpdGljc19yYXRpbmciLAogICAgICAgICAgIkF1ZGllbmNlIFJhdGluZyIgPSAiYXVkaWVuY2VfcmF0aW5nIgogICAgICAgICksCiAgICAgICAgc2VsZWN0ZWQgPSAibXBhYV9yYXRpbmciCiAgICAgICksCgogICAgICBzbGlkZXJJbnB1dCgKICAgICAgICBpbnB1dElkID0gImFscGhhIiwKICAgICAgICBsYWJlbCA9ICJBbHBoYToiLAogICAgICAgIG1pbiA9IDAsIG1heCA9IDEsCiAgICAgICAgdmFsdWUgPSAwLjUKICAgICAgKSwKCiAgICAgIHNsaWRlcklucHV0KAogICAgICAgIGlucHV0SWQgPSAic2l6ZSIsCiAgICAgICAgbGFiZWwgPSAiU2l6ZToiLAogICAgICAgIG1pbiA9IDAsIG1heCA9IDUsCiAgICAgICAgdmFsdWUgPSAyCiAgICAgICksCgogICAgICB0ZXh0SW5wdXQoCiAgICAgICAgaW5wdXRJZCA9ICJwbG90X3RpdGxlIiwKICAgICAgICBsYWJlbCA9ICJQbG90IHRpdGxlIiwKICAgICAgICBwbGFjZWhvbGRlciA9ICJFbnRlciB0ZXh0IHRvIGJlIHVzZWQgYXMgcGxvdCB0aXRsZSIKICAgICAgKSwKCiAgICAgIGFjdGlvbkJ1dHRvbigKICAgICAgICBpbnB1dElkID0gInVwZGF0ZV9wbG90X3RpdGxlIiwKICAgICAgICBsYWJlbCA9ICJVcGRhdGUgcGxvdCB0aXRsZSIKICAgICAgKQogICAgKSwKCiAgICBtYWluUGFuZWwoCiAgICAgIHRhZ3MkYnIoKSwKICAgICAgX19fLCAjIGFkZCB0ZXh0IGhlcmUKICAgICAgcGxvdE91dHB1dChvdXRwdXRJZCA9ICJzY2F0dGVycGxvdCIpCiAgICApCiAgKQopCgojIERlZmluZSBzZXJ2ZXIgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKc2VydmVyIDwtIGZ1bmN0aW9uKGlucHV0LCBvdXRwdXQsIHNlc3Npb24pIHsKICBuZXdfcGxvdF90aXRsZSA8LSBldmVudFJlYWN0aXZlKAogICAgZXZlbnRFeHByID0gaW5wdXQkdXBkYXRlX3Bsb3RfdGl0bGUsCiAgICB2YWx1ZUV4cHIgPSB7CiAgICAgIHRvVGl0bGVDYXNlKGlucHV0JHBsb3RfdGl0bGUpCiAgICB9CiAgKQoKICBvdXRwdXQkc2NhdHRlcnBsb3QgPC0gcmVuZGVyUGxvdCh7CiAgICBnZ3Bsb3QoZGF0YSA9IG1vdmllcywgYWVzX3N0cmluZyh4ID0gaW5wdXQkeCwgeSA9IGlucHV0JHksIGNvbG9yID0gaW5wdXQkeikpICsKICAgICAgZ2VvbV9wb2ludChhbHBoYSA9IGlucHV0JGFscGhhLCBzaXplID0gaW5wdXQkc2l6ZSkgKwogICAgICBsYWJzKHRpdGxlID0gbmV3X3Bsb3RfdGl0bGUoKSkKICB9KQp9CgojIENyZWF0ZSB0aGUgU2hpbnkgYXBwIG9iamVjdCAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKc2hpbnlBcHAodWkgPSB1aSwgc2VydmVyID0gc2VydmVyKQ==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiU2hpbnkgQXBwIgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCiMgTG9hZCBwYWNrYWdlcyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgpsaWJyYXJ5KHNoaW55KQpsaWJyYXJ5KGdncGxvdDIpCmxpYnJhcnkodG9vbHMpCgojIExvYWQgZGF0YSAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKbG9hZCgiTVZQQ2xlYW4xOTYwXzIwMjAuUkRhdGEiKQpsb2FkKCJDWUNsZWFuMTk2MF8yMDIwLlJEYXRhIikKbG9hZCgiUm9va2llQ2xlYW4xOTYwXzIwMjAuUkRhdGEiKQoKIyBEZWZpbmUgVUkgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KCnVpIDwtIGZsdWlkUGFnZSgKICBzaWRlYmFyTGF5b3V0KAogICAgc2lkZWJhclBhbmVsKAogICAgICBzZWxlY3RJbnB1dCgKICAgICAgICBpbnB1dElkID0gInkiLAogICAgICAgIGxhYmVsID0gIlktYXhpczoiLAogICAgICAgIGNob2ljZXMgPSBjKAogICAgICAgICAgIldpbnMgQWJvdmUgUmVwbGFjZW1lbnQiID0gIldBUiIsCiAgICAgICAgICAiQmF0dGluZyBBdmVyYWdlIiA9ICJCQSIsCiAgICAgICAgICAiT24gQmFzZSBQZXJjZW50YWdlIiA9ICJPUFMiLAogICAgICAgICAgIlNsdWdnaW5nIiA9ICJTTEciLAogICAgICAgICAgIkhvbWUgUnVucyIgPSAiSFIiCiAgICAgICAgICAiUnVucyBCYXR0ZWQgSW4iID0gIlJCSSIsCiAgICAgICAgICAiU3RvbGVuIEJhc2VzIiA9ICJTQiIsCiAgICAgICAgICAiV2lucyIgPSAiVyIsCiAgICAgICAgICAiTG9zZXMiID0gIkwiLAogICAgICAgICAgIlNhdmVzIiA9ICJTViIsCiAgICAgICAgICAiRWFybiBSdW4gQXZlcmFnZSIgPSAiRVJBIiwKICAgICAgICAgICJJbm5pbmdzIFBpdGNoZWQiID0gIklQIiwKICAgICAgICAgICJTdHJpa2UgT3V0cyIgPSAiU08iLAogICAgICAgICksCiAgICAgICAgc2VsZWN0ZWQgPSAiV0FSIgogICAgICApLAoKICAgICAgc2VsZWN0SW5wdXQoCiAgICAgICAgaW5wdXRJZCA9ICJ4IiwKICAgICAgICBsYWJlbCA9ICJTZWFzb246IiwKICAgICAgICBjaG9pY2VzID0gYygKICAgICAgICAgICJTZWFzb24iID0gIlllYXIiLAogICAgICAgICksCiAgICAgICAgc2VsZWN0ZWQgPSAiWWVhciIKICAgICAgKSwKCiMgICAgICBzZWxlY3RJbnB1dCgKIyAgICAgICAgaW5wdXRJZCA9ICJ6IiwKIyAgICAgICAgbGFiZWwgPSAiQ29sb3IgYnk6IiwKIyAgICAgICAgY2hvaWNlcyA9IGMoCiMgICAgICAgICAgIlRpdGxlIFR5cGUiID0gInRpdGxlX3R5cGUiLAojICAgICAgICAgICJHZW5yZSIgPSAiZ2VucmUiLAojICAgICAgICAgICJNUEFBIFJhdGluZyIgPSAibXBhYV9yYXRpbmciLAojICAgICAgICAgICJDcml0aWNzIFJhdGluZyIgPSAiY3JpdGljc19yYXRpbmciLAojICAgICAgICAgICJBdWRpZW5jZSBSYXRpbmciID0gImF1ZGllbmNlX3JhdGluZyIKIyAgICAgICAgKSwKIyAgICAgICAgc2VsZWN0ZWQgPSAibXBhYV9yYXRpbmciCiMgICAgICApLAoKICAgICAgc2xpZGVySW5wdXQoCiAgICAgICAgaW5wdXRJZCA9ICJhbHBoYSIsCiAgICAgICAgbGFiZWwgPSAiQWxwaGE6IiwKICAgICAgICBtaW4gPSAwLCBtYXggPSAxLAogICAgICAgIHZhbHVlID0gMC41CiAgICAgICksCgogICAgICBzbGlkZXJJbnB1dCgKICAgICAgICBpbnB1dElkID0gInNpemUiLAogICAgICAgIGxhYmVsID0gIlNpemU6IiwKICAgICAgICBtaW4gPSAwLCBtYXggPSA1LAogICAgICAgIHZhbHVlID0gMgogICAgICApLAoKICAgICAgdGV4dElucHV0KAogICAgICAgIGlucHV0SWQgPSAicGxvdF90aXRsZSIsCiAgICAgICAgbGFiZWwgPSAiUGxheWVyIFN0YXRzIiwKIyAgICAgICAgcGxhY2Vob2xkZXIgPSAiRW50ZXIgdGV4dCB0byBiZSB1c2VkIGFzIHBsb3QgdGl0bGUiCiAgICAgICksCgojICAgICAgYWN0aW9uQnV0dG9uKAojICAgICAgICBpbnB1dElkID0gInVwZGF0ZV9wbG90X3RpdGxlIiwKIyAgICAgICAgbGFiZWwgPSAiVXBkYXRlIHBsb3QgdGl0bGUiCiMgICAgICApCiAgICApLAoKICAgIG1haW5QYW5lbCgKICAgICAgdGFncyRicigpLAogICAgICBfX18sICMgYWRkIHRleHQgaGVyZQogICAgICBwbG90T3V0cHV0KG91dHB1dElkID0gInNjYXR0ZXJwbG90IikKICAgICkKICApCikKCiMgRGVmaW5lIHNlcnZlciAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgpzZXJ2ZXIgPC0gZnVuY3Rpb24oaW5wdXQsIG91dHB1dCwgc2Vzc2lvbikgewogIG5ld19wbG90X3RpdGxlIDwtIGV2ZW50UmVhY3RpdmUoCiAgICBldmVudEV4cHIgPSBpbnB1dCR1cGRhdGVfcGxvdF90aXRsZSwKICAgIHZhbHVlRXhwciA9IHsKICAgICAgdG9UaXRsZUNhc2UoaW5wdXQkcGxvdF90aXRsZSkKICAgIH0KICApCgogIG91dHB1dCRzY2F0dGVycGxvdCA8LSByZW5kZXJQbG90KHsKICAgIGdncGxvdChkYXRhID0gbW92aWVzLCBhZXNfc3RyaW5nKHggPSBpbnB1dCR4LCB5ID0gaW5wdXQkeSkpICsKICAgICAgZ2VvbV9wb2ludChhbHBoYSA9IGlucHV0JGFscGhhLCBzaXplID0gaW5wdXQkc2l6ZSkgKwogICAgICBsYWJzKHRpdGxlID0gbmV3X3Bsb3RfdGl0bGUoKSkKICB9KQp9CgojIENyZWF0ZSB0aGUgU2hpbnkgYXBwIG9iamVjdCAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKc2hpbnlBcHAodWkgPSB1aSwgc2VydmVyID0gc2VydmVyKQ==</div>
 
 
 
