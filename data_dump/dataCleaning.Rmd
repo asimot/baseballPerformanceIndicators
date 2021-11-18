@@ -97,15 +97,17 @@ teamNames
 ```{r dictionary_create}
 
 # Creating list of team name abbreviations
-abbrList <- c("BAL", "BOS", "CHC", "CWS", "CIN", "CLE", "DET", "OAK",
-              "LAA", "LAD", "MIN", "ATL", "NYY", "PHI", "PIT", "SF",
-              "STL", "WSH", "HOU", "NYM", "KC", "SD", "MIL", "TEX",
-              "SEA", "TOR", "COL", "MIA", "ARI", "TB")
+abbrList <- c("BAL", "BOS", "CHC", "CWS", "CIN", "CLE", "DET", "KC",
+              "LAD", "MIL", "NYY", "PHI", "PIT", "SF", "STL", "WSH",
+              "LAA", "MIN", "HOU", "NYM", "CAL", "HOU", "ATL", "OAK", 
+              "KC", "MTL", "SD", "SEA", "MIL", "TEX", "SEA", "TOR", 
+              "COL", "FLA", "ANA", "ARI", "TB", "LAA", "WSH", "TB", 
+              "MIA")
 
 # Creating the dictionary to pair team names in full to their respective abbreviations
 teamDict <- hash(teamNames, abbrList)
 
-sort(abbrList)
+# sort(abbrList)
 
 ```
 
