@@ -1,0 +1,111 @@
+---
+title: "cleaningPlayerData"
+author: "Aaron Simot"
+date: "11/11/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r packages, include=FALSE}
+library(tidyverse)
+library(hash)
+
+```
+
+
+```{r loading, include=FALSE}
+
+# Load in the player pitching and batting data
+playerBat <- read_csv2(here::here("data_scrape/PlayerBattingStandards1960_2020"))
+playerPitch <- read_csv2(here::here("data_scrape/PlayerPitchingStandards1960_2020"))
+
+teamNaming <- read_csv2(here::here("data_dump/cleanTeamsBat1900_2020"))
+
+```
+
+
+
+```{r cleaning}
+
+# Removing some of the information that was carried over during the scrape
+playerBatClean <- playerBat %>%
+  filter(!str_detect(X1, "Page size"))
+
+#colNames <- playerBat %>% filter(X1 == '#')
+#colNames <- c(colNames[1, ])
+
+# Changes column names from X# to the actual column names
+names(playerBatClean) <- playerBatClean[1, ]
+
+# Removing rows where the to-bo column names were saved
+playerBatClean <- playerBatClean %>%
+  filter(`#` != '#')
+
+playerPitchClean <- playerPitch %>%
+  filter(!str_detect(X1, "Page size"))
+
+names(playerPitchClean) <- playerPitchClean[1, ]
+
+playerPitchClean <- playerPitchClean %>%
+  filter(`#` != '#')
+
+
+# playerPitchClean
+
+```
+
+```{r}
+
+# playerBatClean %>%
+#   filter(Team == '- - -' | Team == 'TBD')
+
+playerBatClean %>%
+  filter(Name == 'Kevin Youkilis') %>%
+  arrange(desc(Season))
+
+```
+
+
+```{r associate_team_names}
+
+allNames <- unique(teamNaming$Tm)
+allAbbr <- sort(unique(playerBatClean$Team))
+
+allAbbr
+
+
+```
+
+Note: "- - -" indicates multiple teams played for on a year - will be changed to "TOT"
+
+```{r fix_multi_teams}
+
+# Reassigning players that played multiple teams
+playerBatClean <- playerBatClean %>%
+  mutate(Team = case_when(
+    !str_detect(Team, "[A-Z]") ~ "TOT",
+    TRUE ~ Team
+  ))
+
+playerBatClean
+```
+
+
+```{r export_data, include=FALSE}
+
+write_csv2(playerBatClean, here::here("data_dump/cleanPlayerBat1960_2020"))
+write_csv2(playerPitchClean, here::here("data_dump/cleanPlayerPitch1960_2020"))
+
+
+```
+
+
+
+
+
+
+

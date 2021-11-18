@@ -82,51 +82,17 @@ Notable name changes:
 
 cleanTeamsBat <- cleanTeamsBat %>%
   #retaining our desired year subset for displays
-  filter(year > 1960) %>%
-  #convert historic names to most recent names of teams
-  mutate(Tm = case_when(
-    Tm == "Tampa Bay Devil Rays" ~ "Tampa Bay Rays",
-    
-    Tm == "California Angels" ~ "Los Angeles Angels",
-    Tm == "Anaheim Angels" ~ "Los Angeles Angels",
-    Tm == "Los Angeles Angels of Anaheim" ~ "Los Angeles Angels",
-    Tm == "Los Angles Angels" ~ "Los Angeles Angels",
-    
-    Tm == "Montreal Expos" ~ "Washington Senators",
-    Tm == "Washington Nationals" ~ "Washington Senators",
-    Tm == "Houston Colt .45s" ~ "Houston Astros",
-    Tm == "Milwaukee Braves" ~ "Atlanta Braves",
-    Tm == "Kansas City Athletics" ~ "Oakland Athletics",
-    Tm == "Seattle Pilots" ~ "Milwaukee Brewers",
-    Tm == "Florida Marlins" ~ "Miami Marlins",
-    TRUE ~ Tm
-  ))
+  filter(year >= 1960)
 
 cleanTeamsPitch <- cleanTeamsPitch %>%
   #retaining our desired year subset for displays
-  filter(year > 1960) %>%
-  #convert historic names to most recent names of teams
-  mutate(Tm = case_when(
-    Tm == "Tampa Bay Devil Rays" ~ "Tampa Bay Rays",
-    
-    Tm == "California Angels" ~ "Los Angeles Angels",
-    Tm == "Anaheim Angels" ~ "Los Angeles Angels",
-    Tm == "Los Angeles Angels of Anaheim" ~ "Los Angeles Angels",
-    Tm == "Los Angles Angels" ~ "Los Angeles Angels",
-    
-    Tm == "Montreal Expos" ~ "Washington Senators",
-    Tm == "Washington Nationals" ~ "Washington Senators",
-    Tm == "Houston Colt .45s" ~ "Houston Astros",
-    Tm == "Milwaukee Braves" ~ "Atlanta Braves",
-    Tm == "Kansas City Athletics" ~ "Oakland Athletics",
-    Tm == "Seattle Pilots" ~ "Milwaukee Brewers",
-    Tm == "Florida Marlins" ~ "Miami Marlins",
-    TRUE ~ Tm
-  ))
+  filter(year >= 1960)
 
 teamNames <- unique(cleanTeamsBat$Tm)
 teamNames
 ```
+
+
 
 ```{r dictionary_create}
 
@@ -138,6 +104,8 @@ abbrList <- c("BAL", "BOS", "CHC", "CWS", "CIN", "CLE", "DET", "OAK",
 
 # Creating the dictionary to pair team names in full to their respective abbreviations
 teamDict <- hash(teamNames, abbrList)
+
+sort(abbrList)
 
 ```
 
