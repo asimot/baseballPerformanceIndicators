@@ -10,7 +10,9 @@ library(tools)
 
 # Load data --------------------------------------------------------------------
 
-load("")
+load("MVPClean1960_2020.RData")
+load("CYClean1960_2020.RData")
+load("RookieClean1960_2020.RData")
 
 # Define UI --------------------------------------------------------------------
 
@@ -21,40 +23,44 @@ ui <- fluidPage(
         inputId = "y",
         label = "Y-axis:",
         choices = c(
-          "IMDB rating" = "imdb_rating",
-          "IMDB number of votes" = "imdb_num_votes",
-          "Critics Score" = "critics_score",
-          "Audience Score" = "audience_score",
-          "Runtime" = "runtime"
+          "Wins Above Replacement" = "WAR",
+          "Batting Average" = "BA",
+          "On Base Percentage" = "OPS",
+          "Slugging" = "SLG",
+          "Home Runs" = "HR"
+          "Runs Batted In" = "RBI",
+          "Stolen Bases" = "SB",
+          "Wins" = "W",
+          "Loses" = "L",
+          "Saves" = "SV",
+          "Earn Run Average" = "ERA",
+          "Innings Pitched" = "IP",
+          "Strike Outs" = "SO",
         ),
-        selected = "audience_score"
+        selected = "WAR"
       ),
 
       selectInput(
         inputId = "x",
-        label = "X-axis:",
+        label = "Season:",
         choices = c(
-          "IMDB rating" = "imdb_rating",
-          "IMDB number of votes" = "imdb_num_votes",
-          "Critics Score" = "critics_score",
-          "Audience Score" = "audience_score",
-          "Runtime" = "runtime"
+          "Season" = "Year",
         ),
-        selected = "critics_score"
+        selected = "Year"
       ),
 
-      selectInput(
-        inputId = "z",
-        label = "Color by:",
-        choices = c(
-          "Title Type" = "title_type",
-          "Genre" = "genre",
-          "MPAA Rating" = "mpaa_rating",
-          "Critics Rating" = "critics_rating",
-          "Audience Rating" = "audience_rating"
-        ),
-        selected = "mpaa_rating"
-      ),
+#      selectInput(
+#        inputId = "z",
+#        label = "Color by:",
+#        choices = c(
+#          "Title Type" = "title_type",
+#          "Genre" = "genre",
+#          "MPAA Rating" = "mpaa_rating",
+#          "Critics Rating" = "critics_rating",
+#          "Audience Rating" = "audience_rating"
+#        ),
+#        selected = "mpaa_rating"
+#      ),
 
       sliderInput(
         inputId = "alpha",
@@ -72,14 +78,14 @@ ui <- fluidPage(
 
       textInput(
         inputId = "plot_title",
-        label = "Plot title",
-        placeholder = "Enter text to be used as plot title"
+        label = "Player Stats",
+#        placeholder = "Enter text to be used as plot title"
       ),
 
-      actionButton(
-        inputId = "update_plot_title",
-        label = "Update plot title"
-      )
+#      actionButton(
+#        inputId = "update_plot_title",
+#        label = "Update plot title"
+#      )
     ),
 
     mainPanel(
@@ -101,7 +107,7 @@ server <- function(input, output, session) {
   )
 
   output$scatterplot <- renderPlot({
-    ggplot(data = movies, aes_string(x = input$x, y = input$y, color = input$z)) +
+    ggplot(data = movies, aes_string(x = input$x, y = input$y)) +
       geom_point(alpha = input$alpha, size = input$size) +
       labs(title = new_plot_title())
   })
