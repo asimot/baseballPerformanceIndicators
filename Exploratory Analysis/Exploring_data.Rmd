@@ -16,40 +16,46 @@ library(tidyverse)
 ```{r load_data, message = FALSE, include=FALSE}
 teamsBat <- read_csv2(here::here("data_dump/cleanTeamsBat1900_2020"))
 teamsPitch <- read_csv2(here::here("data_dump/cleanTeamsPitch1900_2020"))
+playerBat <- read_csv2(here::here("data_dump/cleanPlayerBat1960_2020"))
+platerPitch <- read_csv2(here::here("data_dump/cleanPlayerPitch1960_2020"))
+cyyoung <- read_csv2(here::here("data_dump/CYClean1960_2020"))
+mvp <- read_csv2(here::here("data_dump/MVPClean1960_2020"))
+rook <- read_csv2(here::here("data_dump/RookieClean1960_2020"))
 
 ```
 
-
-```{r, include=FALSE}
-#too many teams to display in one graph currently
-teamsBat %>%
-  filter(year %in% c(2000:2020)) %>%
-  ggplot() + 
-  geom_boxplot(mapping = aes(x = BA, y = Tm))
-
-
-```
 
 ```{r}
 
-test <- teamsBat %>%
-  filter(year >= 1960)
 
-teamnames <- unique(test$Tm)
-teamnames
 
-test %>% 
-  filter(str_starts(Tm, "Washington") | str_starts(Tm, "Montreal")) %>%
-  arrange(Tm)
+mvp %>%
+  mutate(YearCats = case_when(
+    between(Year, 1960, 1969) ~ "1960-1969",
+    between(Year, 1970, 1979) ~ "1970-1979",
+    between(Year, 1980, 1989) ~ "1980-1989",
+    between(Year, 1990, 1999) ~ "1990-1999",
+    between(Year, 2000, 2009) ~ "2000-2009",
+    between(Year, 2010, 2020) ~ "2010-2020"
+  )) #%>%
+  # ggplot() +
+  # geom_boxplot(mapping = aes(x = YearCats, y = BA))
+
 
 ```
 
 
-Notable name chnges:
-  Tampa Bay Devil Rays -> Tampa Bay Rays
-  Los Angeles Angels -> California Angels -> Anaheim Angels -> Los Angles Angels of Anaheim -> Los Angles Angels
-  Montreal Expos -> Washington Nationals -> Washington Senators
-  Houston Colt .45s -> Houston Astros
-  Milwaukee Braves -> Atlanta Braves
-  Kansas City Athletics -> Oakland Athletics
-  Seattle Pilots -> Milwaukee Brewers
+
+
+
+
+
+
+
+
+
+
+
+
+
+
