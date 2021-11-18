@@ -1,7 +1,4 @@
----
-title: "Baseball89889"
-output: html_notebook
----
+
     # Load packages ----------------------------------------------------------------
 
 library(shiny)
@@ -10,9 +7,9 @@ library(tools)
 
 # Load data --------------------------------------------------------------------
 
-load("MVPClean1960_2020.RData")
-load("CYClean1960_2020.RData")
-load("RookieClean1960_2020.RData")
+load(here::here("Baseball/MVPClean1960_2020.Rdata"))
+load(here::here("Baseball/CYClean1960_2020.RData"))
+load(here::here("Baseball/RookieClean1960_2020.RData"))
 
 # Define UI --------------------------------------------------------------------
 

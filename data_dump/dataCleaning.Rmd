@@ -245,11 +245,10 @@ CYClean <- CYClean[, c(1:4, 12, 5:11)]
 #write_csv2(CYClean, here::here("data_dump/CYClean1960_2020"))
 
 #exporting the cleaned Rookie stats
-<<<<<<< HEAD
+
 #write_csv2(RookiedClean, here::here("data_dump/RookieClean1960_2020"))
-=======
 write_csv2(RookieClean, here::here("data_dump/RookieClean1960_2020"))
->>>>>>> 99dc429ddfc0b3a273af0b5e4acc48006365173e
+
 ```
 
 ```{r}
