@@ -139,6 +139,7 @@ round(ro,2)
 ```
 
 ```{r}
+#Making the cols numeric
 testplayerNew[7:24] <- sapply(testplayerNew[7:24], as.numeric)
 
 ```
