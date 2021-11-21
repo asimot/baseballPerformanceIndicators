@@ -1,0 +1,165 @@
+---
+title: "Jake"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include=FALSE}
+install.packages("ggimage")
+```
+
+
+```{r}
+library(tidyverse)
+library(hash)
+library(ggplot2)
+library(ggimage)
+```
+
+
+```{r cars}
+playerBatClean <- read_csv2(here::here("data_dump/cleanPlayerBat1960_2020"))
+playerPitchClean <- read_csv2(here::here("data_dump/cleanPlayerPitch1960_2020"))
+```
+```{r}
+testplayer <- playerBatClean %>% 
+  filter(Name == 'Mike Trout') %>% #Filtering a specific player and can change it through shiny select
+  arrange(desc(Season)) #Arranges table by descending season
+  TotalAB <- sum(testplayer$AB) #Getting the total number of at bats
+  TotalSingle <- sum(testplayer$'1B') #Getting the total number of singles
+  TotalDouble <- sum(testplayer$'2B') #Getting the total number of doubles
+  TotalTriple <- sum(testplayer$'3B') #Getting the total number of triples
+  TotalHomeRun <- sum(testplayer$HR) #Getting the total number of Home Runs
+  TotalWalk <- sum(testplayer$BB) #Getting the total number of Walks
+  TotalStolenBase <- sum(testplayer$SB) #Getting the total number of Stolen bases
+  avgAB <- mean(testplayer$AB) #Getting the average number of ABs
+  avgSF <- ceiling(mean(testplayer$SF)) #Getting the average number of sacrifice flies
+  avgHBP <- ceiling(mean(testplayer$HBP)) #Getting the average number of Hit By Pitches
+  SiDo <- TotalSingle + TotalDouble #Getting the Total number of singles and Doubles 
+  SiDoTr <- TotalSingle + TotalDouble + TotalTriple #Getting the Total number of singles and Doubles  and triples
+  SiDoTrHr <- TotalSingle + TotalDouble + TotalTriple + TotalHomeRun #Getting the Total number of singles and Doubles and triples and home runs
+  
+testplayer
+RoundAveAB <- ceiling(avgAB) #Getting the average number of At Bats and rounding it to a whole number 
+RoundAveAB
+print(paste0("The Total number of singles is ", TotalSingle) )
+print(paste0("The Total number of Doubles is ", TotalDouble) )
+print(paste0("The Total number of Triples is ", TotalTriple) )
+print(paste0("The Total number of Home Runs is ", TotalHomeRun) )
+print(paste0("The Total number of Singles and Doubles is ", SiDo) )
+print(paste0("The Total number of Singles, Doubles, and Triples is ", SiDoTr) )
+print(paste0("The Total number of Singles, Doubles, Triples and Home runs is ", SiDoTrHr) )
+TotalAB
+avgSingle
+avgHBP
+avgSF
+```
+
+
+
+```{r}
+
+for (i in 1:RoundAveAB) #A for loop the runs for the average number of at bats for a player
+  sim = sample(1:TotalAB, RoundAveAB, replace=T) #Selects a random number from 1 to the total number at bats of a player
+#If the number is between 1 and the number of singles it adds one to simsingle
+    SimSingle <- ifelse(sim >= 1 & sim <= TotalSingle, 1,0) 
+#If the number is between number is between total number of singles and the number of singles plus doubles it adds one to simDouble
+    SimDouble <- ifelse(sim > TotalSingle & sim <= SiDo, 1,0)
+#If the number is between number is between total number of singles plus doubles plus the number of singles plus doubles plus triples it adds one to simTriples
+    SimTriple <- ifelse(sim > SiDo & sim <= SiDoTr, 1,0)
+#If the number is between number is between total number of singles plus doubles plus Triples and the number of singles plus doubles plus triples plus Home Runs it adds one to simHomeRuns
+    SimHomeRun <- ifelse(sim > SiDoTr & sim <= SiDoTrHr, 1,0)
+
+for (i in 1:RoundAveAB)
+  sim = sample(1:TotalAB, RoundAveAB, replace=T)  
+#If the number is between 1 and the number of Total Walks it adds one to simwalk
+     SimWalk <- ifelse(sim >= 1 & sim <= TotalWalk, 1,0)
+        
+```
+
+```{r}
+#Summing all the ones from each type of hit and walks
+Hit1 <- sum(SimSingle)
+Hit2 <- sum(SimDouble)
+Hit3 <- sum(SimTriple)
+Hit4 <- sum(SimHomeRun)
+sum(SimWalk)
+print(paste0("The Sim number of singles is ", Hit1) )
+print(paste0("The Sim number of Doubles is ", Hit2) )
+print(paste0("The Sim number of Triples is ", Hit3) )
+print(paste0("The Sim number of Home Runs is ", Hit4) )
+print(paste0("The Sim number of Walks is ", SumSimaWalk) )
+
+#Getting the total number of hits 
+SimNumHits <-  Hit1 + Hit2 + Hit3 + Hit4
+
+SimNumHits
+
+#Getting the Sim batting average
+SimAvg <- round(SimNumHits/RoundAveAB,3)
+
+SimAvg
+
+#Getting the sim On Base Percentage
+SimOBP <- round((SimNumHits + SumSimaWalk + avgHBP)/(RoundAveAB + SumSimaWalk + avgHBP + avgSF),3)
+
+SimOBP
+
+#Total number of plate appreances
+NumPA <- RoundAveAB + SumSimaWalk + avgHBP
+
+NumPA
+```
+
+
+```{r}
+#Making a new vector to add it to the table
+SimRow <- c("Sim", "Sim", "Mike Trout", "Sim", "Sim", RoundAveAB, NumPA, SimNumHits, Hit1, Hit2, Hit3, Hit4, "Sim", "Sim", SumSimaWalk, "Sim", "Sim", avgHBP, avgSF, "Sim", "Sim", "Sim", "Sim", SimAvg)
+```
+
+```{r}
+#Adding the new sim row to the table
+testplayerNew <- rbind(testplayer, SimRow) 
+testplayerNew
+```
+
+
+
+```{r}
+numTest <- 10
+test <- sample(1:numTest, numTest, replace=T)
+test
+ro <- 55.4646
+floor(ro)
+ceiling(ro)
+round(ro,2)
+```
+
+```{r}
+testplayerNew[7:24] <- sapply(testplayerNew[7:24], as.numeric)
+
+```
+
+
+
+```{r}
+
+testplayerNew %>%
+  ggplot(mapping = aes(x= Season, y = AVG, )) +  
+  ylim(.20,.4) +
+  theme_bw() +
+  geom_point() +
+  labs(title="Player Batting Average By Season")
+ 
+
+testplayerNew %>%
+  ggplot(mapping = aes(x= Season, y = HR, )) +  
+  theme_light() +
+  geom_point() +
+  labs(title="Player Home Runs By Season")
+
+```
+
