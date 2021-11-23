@@ -27,7 +27,7 @@ ui <- fluidPage(
                 choices = c(
                     "Wins Above Replacement" = "WAR",
                     "Batting Average" = "BA",
-                    "On Base Percentage" = "OPS",
+                    "On Base Percentage" = "OBP",
                     "Slugging" = "SLG",
                     "Home Runs" = "HR",
                     "Runs Batted In" = "RBI",
@@ -52,18 +52,17 @@ ui <- fluidPage(
                 selected = "Year"
             ),
             
-            #      selectInput(
-            #        inputId = "z",
-            #        label = "Color by:",
-            #        choices = c(
-            #          "Title Type" = "title_type",
-            #          "Genre" = "genre",
-            #          "MPAA Rating" = "mpaa_rating",
-            #          "Critics Rating" = "critics_rating",
-            #          "Audience Rating" = "audience_rating"
-            #        ),
-            #        selected = "mpaa_rating"
-            #      ),
+                 selectInput(
+                   inputId = "z",
+                   label = "Distribution Selector",
+                   choices = c(
+                       "Wins Above Replacement" = "WAR",
+                       "Batting Average" = "BA",
+                       "On Base Percentage" = "OBP",
+                       "Slugging" = "SLG"
+                   ),
+                   selected = "BA"
+                 ),
             
             sliderInput(
                 inputId = "alpha",
@@ -92,7 +91,8 @@ ui <- fluidPage(
         ),
 
         mainPanel(
-            plotOutput(outputId = "scatterplot")
+            plotOutput(outputId = "scatterplot"),
+            plotOutput(outputId = "scatterplot2")
         )
     )
 )
@@ -112,6 +112,24 @@ server <- function(input, output, session) {
     output$scatterplot <- renderPlot({
         ggplot(data = mvp, aes_string(x = input$x, y = input$y)) +
             geom_point()
+    })
+    
+    # Scatter of Batting Average density across MVP Hitters
+    output$scatterplot2 <- renderPlot({
+        mvp %>%
+            # Removing pitchers from displayed data
+            filter(is.na(ERA)) %>%
+            ggplot(mapping = aes(x = BA)) + 
+            geom_histogram(binwidth = 0.005, color = "black", fill = "blue") + 
+            geom_density(color = "red") + 
+            labs(
+                title = "Batter Stats of MVP Winners",
+                subtitle = "1960 to 2020",
+                caption = "*Excludes Pitchers"
+            ) +
+            xlab(input$z) + 
+            ylab("Count")
+        
     })
 }
 
