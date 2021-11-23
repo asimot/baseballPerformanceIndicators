@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
 
+
 ```{r load_data, message = FALSE, include=FALSE}
 teamsBat <- read_csv2(here::here("data_dump/cleanTeamsBat1900_2020"))
 teamsPitch <- read_csv2(here::here("data_dump/cleanTeamsPitch1900_2020"))
