@@ -27,7 +27,7 @@ ui <- fluidPage(
                 choices = c(
                     "Wins Above Replacement" = "WAR",
                     "Batting Average" = "BA",
-                    "On Base Percentage" = "OPS",
+                    "On Base Percentage" = "OBP",
                     "Slugging" = "SLG",
                     "Home Runs" = "HR",
                     "Runs Batted In" = "RBI",
