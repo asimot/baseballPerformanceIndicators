@@ -8,11 +8,11 @@ library(tools)
 # Load data --------------------------------------------------------------------
 
 # load MVP data
-mvp <- read_csv2(here::here("Baseball/MVPClean1960_2020"))
+mvp <- read.csv2(here::here("Baseball/MVPClean1960_2020"))
 # Load Cy Young Data
-cy <- read_csv2(here::here("Baseball/CYClean1960_2020"))
+cy <- read.csv2(here::here("Baseball/CYClean1960_2020"))
 # Load Rookie Data
-rook <- read_csv2(here::here("Baseball/RookieClean1960_2020"))
+rook <- read.csv2(here::here("Baseball/RookieClean1960_2020"))
 
 # Define UI --------------------------------------------------------------------
 
