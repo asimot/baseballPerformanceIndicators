@@ -2,13 +2,14 @@
 # Load packages ----------------------------------------------------------------
 
 library(shiny)
-library(ggplot2)
+library(tidyverse)
 library(tools)
 
 # Load data --------------------------------------------------------------------
 
 # load MVP data
-mvp <- read.csv2(here::here("Baseball/MVPClean1960_2020"))
+mvp <- as_tibble(read.csv2(here::here("Baseball/MVPClean1960_2020")))
+#max(mvp$WAR) - min(mvp$WAR)
 # Load Cy Young Data
 cy <- read.csv2(here::here("Baseball/CYClean1960_2020"))
 # Load Rookie Data
@@ -52,17 +53,17 @@ ui <- fluidPage(
                 selected = "Year"
             ),
             
-                 selectInput(
-                   inputId = "z",
-                   label = "Distribution Selector",
-                   choices = c(
-                       "Wins Above Replacement" = "WAR",
-                       "Batting Average" = "BA",
-                       "On Base Percentage" = "OBP",
-                       "Slugging" = "SLG"
-                   ),
-                   selected = "BA"
-                 ),
+            selectInput(
+                inputId = "z",
+                label = "Distribution Selector",
+                choices = c(
+                    "Wins Above Replacement" = "WAR",
+                    "Batting Average" = "BA",
+                    "On Base Percentage" = "OBP",
+                    "Slugging" = "SLG"
+                ),
+                selected = "BA"
+            ),
             
             sliderInput(
                 inputId = "alpha",
@@ -76,6 +77,14 @@ ui <- fluidPage(
                 label = "Size:",
                 min = 0, max = 5,
                 value = 2
+            ),
+            
+            sliderInput(
+                inputId = "binwidth",
+                label = "Bin Width:",
+                min = 0, max = 0.50,
+                value = 0.005,
+                step = 0.005
             ),
             
             # textInput(
@@ -92,7 +101,7 @@ ui <- fluidPage(
 
         mainPanel(
             plotOutput(outputId = "scatterplot"),
-            plotOutput(outputId = "scatterplot2")
+            plotOutput(outputId = "histogram")
         )
     )
 )
@@ -114,13 +123,17 @@ server <- function(input, output, session) {
             geom_point()
     })
     
-    # Scatter of Batting Average density across MVP Hitters
-    output$scatterplot2 <- renderPlot({
+    # Histogram of Batting Average density across MVP Hitters
+    output$histogram <- renderPlot({
         mvp %>%
             # Removing pitchers from displayed data
             filter(is.na(ERA)) %>%
-            ggplot(mapping = aes(x = BA)) + 
-            geom_histogram(binwidth = 0.005, color = "black", fill = "blue") + 
+            ggplot(mapping = aes_string(x = input$z)) + 
+            geom_histogram(
+                binwidth = input$binwidth, 
+                color = "black", 
+                fill = "blue"
+                ) + 
             geom_density(color = "red") + 
             labs(
                 title = "Batter Stats of MVP Winners",
@@ -132,8 +145,7 @@ server <- function(input, output, session) {
         
     })
 }
-#test
-# Test again
+
 # Create the Shiny app object --------------------------------------------------
 
 shinyApp(ui = ui, server = server)
