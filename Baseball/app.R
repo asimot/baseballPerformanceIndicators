@@ -4,6 +4,7 @@
 library(shiny)
 library(ggplot2)
 library(tools)
+library(tidyverse)
 
 # Load data --------------------------------------------------------------------
 
@@ -92,7 +93,7 @@ ui <- fluidPage(
 
         mainPanel(
             plotOutput(outputId = "scatterplot"),
-            plotOutput(outputId = "scatterplot2")
+            plotOutput(outputId = "histogram")
         )
     )
 )
@@ -113,14 +114,15 @@ server <- function(input, output, session) {
         ggplot(data = mvp, aes_string(x = input$x, y = input$y)) +
             geom_point()
     })
-    
+    Selected_var <- reactive(mvp[[input$z]])
+    Bw <- reactive((max(Selected_var())-min(Selected_var()))/mean(Selected_var()))
     # Scatter of Batting Average density across MVP Hitters
-    output$scatterplot2 <- renderPlot({
+    output$histogram <- renderPlot({
         mvp %>%
             # Removing pitchers from displayed data
             filter(is.na(ERA)) %>%
-            ggplot(mapping = aes(x = BA)) + 
-            geom_histogram(binwidth = 0.005, color = "black", fill = "blue") + 
+            ggplot(mapping = aes_string(x = input$z)) + 
+            geom_histogram(binwidth = Bw(), color = "black", fill = "blue") + 
             geom_density(color = "red") + 
             labs(
                 title = "Batter Stats of MVP Winners",

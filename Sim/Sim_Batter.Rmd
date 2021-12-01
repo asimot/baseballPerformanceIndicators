@@ -25,8 +25,20 @@ playerBatClean <- read_csv2(here::here("data_dump/cleanPlayerBat1960_2020"))
 playerPitchClean <- read_csv2(here::here("data_dump/cleanPlayerPitch1960_2020"))
 ```
 ```{r}
-testplayer <- playerBatClean %>% 
-  filter(Name == 'Mike Trout') %>% #Filtering a specific player and can change it through shiny select
+testplayertot <- playerBatClean %>% 
+  mutate(Team = case_when(
+    !str_detect(Team, "[A-Z]") ~ "Multiple Teams",
+    TRUE ~ Team
+  ))
+testplayertot
+
+```
+
+
+
+```{r}
+testplayer <- testplayertot %>% 
+  filter(Name == 'Alex Rodriguez') %>% #Filtering a specific player and can change it through shiny select
   arrange(desc(Season)) #Arranges table by descending season
   TotalAB <- sum(testplayer$AB) #Getting the total number of at bats
   TotalSingle <- sum(testplayer$'1B') #Getting the total number of singles
@@ -53,7 +65,6 @@ print(paste0("The Total number of Singles and Doubles is ", SiDo) )
 print(paste0("The Total number of Singles, Doubles, and Triples is ", SiDoTr) )
 print(paste0("The Total number of Singles, Doubles, Triples and Home runs is ", SiDoTrHr) )
 TotalAB
-avgSingle
 avgHBP
 avgSF
 ```
@@ -86,7 +97,7 @@ Hit1 <- sum(SimSingle)
 Hit2 <- sum(SimDouble)
 Hit3 <- sum(SimTriple)
 Hit4 <- sum(SimHomeRun)
-sum(SimWalk)
+SumSimaWalk <- sum(SimWalk)
 print(paste0("The Sim number of singles is ", Hit1) )
 print(paste0("The Sim number of Doubles is ", Hit2) )
 print(paste0("The Sim number of Triples is ", Hit3) )
@@ -136,6 +147,8 @@ ro <- 55.4646
 floor(ro)
 ceiling(ro)
 round(ro,2)
+part <- testplayerNew[,4]
+part
 ```
 
 ```{r}
@@ -143,24 +156,37 @@ round(ro,2)
 testplayerNew[7:24] <- sapply(testplayerNew[7:24], as.numeric)
 
 ```
+```{r}
+cols <- c("BAL" = "orange", "BOS" = "darkred", "CHC" = "lightblue", "CWS" = "black", "CIN" = "red", "CLE" = "firebrick",
+          "DET" = "chocolate1", "OAK" = "gold","LAA" = "pink", "LAD" = "darkblue", "MIN" = "navy blue", 
+          "ATL" = "grey", "NYY" = "darkgrey", "PHI" = "lightgrey", "PIT" = "yellow", "SF" = "darkorange", 
+          "STL" = "brown2", "WSH" = "brown1", "HOU" = "darkorange1", "NYM" = "Cyan", 
+          "KC" = "royalblue", "SD" = "brown", "MIL" = "purple", "TEX" = "skyblue",
+          "SEA" = "blue", "TOR" = "deepskyblue", "COL" = "darkmagenta", "MIA" = "Green", "ARI" = "firebrick3", "TB" = "lightyellow", 
+          "Sim" = "lightgreen")
+```
 
 
 
 ```{r}
-
 testplayerNew %>%
-  ggplot(mapping = aes(x= Season, y = AVG, )) +  
+  ggplot(mapping = aes(x= Season, y = AVG, color = Team)) +  
   ylim(.20,.4) +
-  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, color = "red"), axis.text.y = element_text(size = 10, color = "blue"),panel.grid.major = element_line(colour = "grey")) +
   geom_point() +
   labs(title="Player Batting Average By Season")
- 
+
+#gr + scale_color_manual(values = cols) + guides("BAL" = FALSE)
 
 testplayerNew %>%
-  ggplot(mapping = aes(x= Season, y = HR, )) +  
-  theme_light() +
+  ggplot(mapping = aes(x= Season, y = HR,color = Team )) +  
+  theme(axis.text.x = element_text(angle = 90)) +
+  theme(axis.text.x = element_text(angle = 90)) +
   geom_point() +
   labs(title="Player Home Runs By Season")
 
 ```
+
+
+
 
