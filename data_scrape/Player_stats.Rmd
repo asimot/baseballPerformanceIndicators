@@ -38,6 +38,7 @@ url_reads <- function(x) {
 
 #Batting
 ```{r}
+#Creating a variable to go through each web page and so I can get the table
 numrow <- as.character(c(1:162))
 
 #vector of years to test design, subset of years vector
@@ -47,7 +48,7 @@ numrow <- as.character(c(1:162))
 #list of URLS for Team Standard Batting tables
 #team_urls_bat <- str_c("https://www.baseball-reference.com/leagues/majors/",years,"-standard-batting.shtml")
 
-
+#Stores the scapped tables into a variable
 player_urls_bat <- str_c("https://www.fangraphs.com/leaders.aspx?pos=all&stats=bat&lg=all&qual=y&type=0&season=2020&month=0&season1=1960&ind=1&team=0&rost=0&age=0&filter=&players=0&startdate=&enddate=&page=",numrow,"_50")
 
 #create new dataframe of all years extracted using map_df to specify vector or URLs and function (url_reads) to apply
@@ -63,6 +64,7 @@ write_csv2(player_batting, here::here('PlayerBattingStandards1960_2020'))
 
 
 ```{r}
+#Creating a variable to go through each web page and so I can get the table
 numrow <- as.character(c(1:99))
 
 player_urls_pit <- str_c("https://www.fangraphs.com/leaders.aspx?pos=all&stats=pit&lg=all&qual=y&type=8&season=2020&month=0&season1=1960&ind=1&team=0&rost=0&age=0&filter=&players=0&startdate=&enddate=&page=",numrow,"_50")

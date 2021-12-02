@@ -56,7 +56,7 @@ testplayer <- testplayertot %>%
   
 testplayer
 RoundAveAB <- ceiling(avgAB) #Getting the average number of At Bats and rounding it to a whole number 
-RoundAveAB
+#RoundAveAB
 print(paste0("The Total number of singles is ", TotalSingle) )
 print(paste0("The Total number of Doubles is ", TotalDouble) )
 print(paste0("The Total number of Triples is ", TotalTriple) )
@@ -64,9 +64,9 @@ print(paste0("The Total number of Home Runs is ", TotalHomeRun) )
 print(paste0("The Total number of Singles and Doubles is ", SiDo) )
 print(paste0("The Total number of Singles, Doubles, and Triples is ", SiDoTr) )
 print(paste0("The Total number of Singles, Doubles, Triples and Home runs is ", SiDoTrHr) )
-TotalAB
-avgHBP
-avgSF
+#TotalAB
+#avgHBP
+#avgSF
 ```
 
 
@@ -128,7 +128,7 @@ NumPA
 
 ```{r}
 #Making a new vector to add it to the table
-SimRow <- c("Sim", "Sim", "Mike Trout", "Sim", "Sim", RoundAveAB, NumPA, SimNumHits, Hit1, Hit2, Hit3, Hit4, "Sim", "Sim", SumSimaWalk, "Sim", "Sim", avgHBP, avgSF, "Sim", "Sim", "Sim", "Sim", SimAvg)
+SimRow <- c("Sim", "Sim", "Alex Rodriguez", "Sim", "Sim", RoundAveAB, NumPA, SimNumHits, Hit1, Hit2, Hit3, Hit4, "Sim", "Sim", SumSimaWalk, "Sim", "Sim", avgHBP, avgSF, "Sim", "Sim", "Sim", "Sim", SimAvg)
 ```
 
 ```{r}
@@ -136,7 +136,11 @@ SimRow <- c("Sim", "Sim", "Mike Trout", "Sim", "Sim", RoundAveAB, NumPA, SimNumH
 testplayerNew <- rbind(testplayer, SimRow) 
 testplayerNew
 ```
+```{r}
+#Making the cols numeric
+testplayerNew[7:24] <- sapply(testplayerNew[7:24], as.numeric)
 
+```
 
 
 ```{r}
@@ -151,11 +155,7 @@ part <- testplayerNew[,4]
 part
 ```
 
-```{r}
-#Making the cols numeric
-testplayerNew[7:24] <- sapply(testplayerNew[7:24], as.numeric)
 
-```
 ```{r}
 cols <- c("BAL" = "orange", "BOS" = "darkred", "CHC" = "lightblue", "CWS" = "black", "CIN" = "red", "CLE" = "firebrick",
           "DET" = "chocolate1", "OAK" = "gold","LAA" = "pink", "LAD" = "darkblue", "MIN" = "navy blue", 
@@ -164,24 +164,30 @@ cols <- c("BAL" = "orange", "BOS" = "darkred", "CHC" = "lightblue", "CWS" = "bla
           "KC" = "royalblue", "SD" = "brown", "MIL" = "purple", "TEX" = "skyblue",
           "SEA" = "blue", "TOR" = "deepskyblue", "COL" = "darkmagenta", "MIA" = "Green", "ARI" = "firebrick3", "TB" = "lightyellow", 
           "Sim" = "lightgreen")
+predicted_df <- data.frame(AVG_pred = predict(lm_fit, testplayerNew), Team=testplayerNew$Team)
+#gr + scale_color_manual(values = cols) + guides("BAL" = FALSE)
 ```
 
 
 
 ```{r}
 testplayerNew %>%
+  #Ploting batting average by season and the points are colored by the team they played for
   ggplot(mapping = aes(x= Season, y = AVG, color = Team)) +  
+  #adding a limit to the y-axis to see the average better
   ylim(.20,.4) +
+  #Angling the x-axis to make it easier to read and adding colors to make it stand out 
   theme(axis.text.x = element_text(angle = 90, color = "red"), axis.text.y = element_text(size = 10, color = "blue"),panel.grid.major = element_line(colour = "grey")) +
   geom_point() +
+  #Titles the graph
   labs(title="Player Batting Average By Season")
 
-#gr + scale_color_manual(values = cols) + guides("BAL" = FALSE)
 
 testplayerNew %>%
   ggplot(mapping = aes(x= Season, y = HR,color = Team )) +  
   theme(axis.text.x = element_text(angle = 90)) +
   theme(axis.text.x = element_text(angle = 90)) +
+  geom_smooth(method='lm', formula = y ~ x)+
   geom_point() +
   labs(title="Player Home Runs By Season")
 
