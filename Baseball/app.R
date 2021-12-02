@@ -14,9 +14,12 @@ library(tidyverse)
 mvp <- as_tibble(read.csv2(here::here("Baseball/MVPClean1960_2020")))
 #max(mvp$WAR) - min(mvp$WAR)
 # Load Cy Young Data
-cy <- read.csv2(here::here("Baseball/CYClean1960_2020"))
+cy <- as_tibble(read.csv2(here::here("Baseball/CYClean1960_2020")))
 # Load Rookie Data
-rook <- read.csv2(here::here("Baseball/RookieClean1960_2020"))
+rook <- as_tibble(read.csv2(here::here("Baseball/RookieClean1960_2020")))
+
+sets <- list()
+sets <- sets[mvp, cy, rook]
 
 # Define UI --------------------------------------------------------------------
 
@@ -90,6 +93,14 @@ ui <- fluidPage(
                 step = 0.005
             ),
             
+            radioButtons(
+                "award", "Select Award Category:",
+                c("Most Valuable Player" = "mvp",
+                  "Rookie of the Year" = "rook",
+                  "Cy Young" = "cy")
+
+            ),
+            
             # textInput(
             #     inputId = "plot_title",
             #     label = "Player Stats",
@@ -156,6 +167,10 @@ server <- function(input, output, session) {
             xlab(input$z) + 
             ylab("Count")
         
+    })
+    
+    awardType <- reactive({
+        a <- input$award
     })
 }
 

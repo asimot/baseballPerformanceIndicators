@@ -26,12 +26,9 @@ rook <- read_csv2(here::here("data_dump/RookieClean1960_2020"))
 ```
 
 ```{r}
-avgWAR <- mean(mvp$WAR)
-stdWAR <- sd(mvp$WAR)
+sets <- list(mvp, rook, cyyoung)
 
-mvp %>%
-  mutate(WARz = (WAR - avgWAR) / stdWAR)
-
+sets[[1]]
 
 ```
 
