@@ -1,0 +1,42 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+library(tidyverse)
+library(hash)
+library(ggplot2)
+library(ggimage)
+```
+
+```{r}
+playerBatClean <- read_csv2(here::here("data_dump/cleanPlayerBat1960_2020"))
+playerPitchClean <- read_csv2(here::here("data_dump/cleanPlayerPitch1960_2020"))
+cyyoung <- read_csv2(here::here("data_dump/CYClean1960_2020"))
+mvp <- read_csv2(here::here("data_dump/MVPClean1960_2020"))
+rook <- read_csv2(here::here("data_dump/RookieClean1960_2020"))
+```
+
+```{r}
+#Take MVP data and takes only the names 
+nmvp <- mvp[,3]
+nmvp
+```
+
+
+```{r}
+#Use the names from the MVP to match the player to see the stats of a player by season
+mvpmer <- merge(playerBatClean, nmvp, by.x = "Name")
+
+#The data a duplicate rows this removes those rows
+unnmvpmer <- unique(mvpmer) %>%
+
+#Removes unneeded colm from data 
+Cleanmvpmer <- select(unnmvpmer, -2)
+```
+

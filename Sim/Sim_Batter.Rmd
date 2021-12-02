@@ -25,8 +25,20 @@ playerBatClean <- read_csv2(here::here("data_dump/cleanPlayerBat1960_2020"))
 playerPitchClean <- read_csv2(here::here("data_dump/cleanPlayerPitch1960_2020"))
 ```
 ```{r}
-testplayer <- playerBatClean %>% 
-  filter(Name == 'Mike Trout') %>% #Filtering a specific player and can change it through shiny select
+testplayertot <- playerBatClean %>% 
+  mutate(Team = case_when(
+    !str_detect(Team, "[A-Z]") ~ "Multiple Teams",
+    TRUE ~ Team
+  ))
+testplayertot
+
+```
+
+
+
+```{r}
+testplayer <- testplayertot %>% 
+  filter(Name == 'Alex Rodriguez') %>% #Filtering a specific player and can change it through shiny select
   arrange(desc(Season)) #Arranges table by descending season
   TotalAB <- sum(testplayer$AB) #Getting the total number of at bats
   TotalSingle <- sum(testplayer$'1B') #Getting the total number of singles
@@ -44,7 +56,7 @@ testplayer <- playerBatClean %>%
   
 testplayer
 RoundAveAB <- ceiling(avgAB) #Getting the average number of At Bats and rounding it to a whole number 
-RoundAveAB
+#RoundAveAB
 print(paste0("The Total number of singles is ", TotalSingle) )
 print(paste0("The Total number of Doubles is ", TotalDouble) )
 print(paste0("The Total number of Triples is ", TotalTriple) )
@@ -52,10 +64,9 @@ print(paste0("The Total number of Home Runs is ", TotalHomeRun) )
 print(paste0("The Total number of Singles and Doubles is ", SiDo) )
 print(paste0("The Total number of Singles, Doubles, and Triples is ", SiDoTr) )
 print(paste0("The Total number of Singles, Doubles, Triples and Home runs is ", SiDoTrHr) )
-TotalAB
-avgSingle
-avgHBP
-avgSF
+#TotalAB
+#avgHBP
+#avgSF
 ```
 
 
@@ -86,7 +97,7 @@ Hit1 <- sum(SimSingle)
 Hit2 <- sum(SimDouble)
 Hit3 <- sum(SimTriple)
 Hit4 <- sum(SimHomeRun)
-sum(SimWalk)
+SumSimaWalk <- sum(SimWalk)
 print(paste0("The Sim number of singles is ", Hit1) )
 print(paste0("The Sim number of Doubles is ", Hit2) )
 print(paste0("The Sim number of Triples is ", Hit3) )
@@ -117,7 +128,7 @@ NumPA
 
 ```{r}
 #Making a new vector to add it to the table
-SimRow <- c("Sim", "Sim", "Mike Trout", "Sim", "Sim", RoundAveAB, NumPA, SimNumHits, Hit1, Hit2, Hit3, Hit4, "Sim", "Sim", SumSimaWalk, "Sim", "Sim", avgHBP, avgSF, "Sim", "Sim", "Sim", "Sim", SimAvg)
+SimRow <- c("Sim", "Sim", "Alex Rodriguez", "Sim", "Sim", RoundAveAB, NumPA, SimNumHits, Hit1, Hit2, Hit3, Hit4, "Sim", "Sim", SumSimaWalk, "Sim", "Sim", avgHBP, avgSF, "Sim", "Sim", "Sim", "Sim", SimAvg)
 ```
 
 ```{r}
@@ -125,7 +136,11 @@ SimRow <- c("Sim", "Sim", "Mike Trout", "Sim", "Sim", RoundAveAB, NumPA, SimNumH
 testplayerNew <- rbind(testplayer, SimRow) 
 testplayerNew
 ```
+```{r}
+#Making the cols numeric
+testplayerNew[7:24] <- sapply(testplayerNew[7:24], as.numeric)
 
+```
 
 
 ```{r}
@@ -136,31 +151,48 @@ ro <- 55.4646
 floor(ro)
 ceiling(ro)
 round(ro,2)
-```
-
-```{r}
-#Making the cols numeric
-testplayerNew[7:24] <- sapply(testplayerNew[7:24], as.numeric)
-
+part <- testplayerNew[,4]
+part
 ```
 
 
+```{r}
+cols <- c("BAL" = "orange", "BOS" = "darkred", "CHC" = "lightblue", "CWS" = "black", "CIN" = "red", "CLE" = "firebrick",
+          "DET" = "chocolate1", "OAK" = "gold","LAA" = "pink", "LAD" = "darkblue", "MIN" = "navy blue", 
+          "ATL" = "grey", "NYY" = "darkgrey", "PHI" = "lightgrey", "PIT" = "yellow", "SF" = "darkorange", 
+          "STL" = "brown2", "WSH" = "brown1", "HOU" = "darkorange1", "NYM" = "Cyan", 
+          "KC" = "royalblue", "SD" = "brown", "MIL" = "purple", "TEX" = "skyblue",
+          "SEA" = "blue", "TOR" = "deepskyblue", "COL" = "darkmagenta", "MIA" = "Green", "ARI" = "firebrick3", "TB" = "lightyellow", 
+          "Sim" = "lightgreen")
+predicted_df <- data.frame(AVG_pred = predict(lm_fit, testplayerNew), Team=testplayerNew$Team)
+#gr + scale_color_manual(values = cols) + guides("BAL" = FALSE)
+```
+
+
 
 ```{r}
-
 testplayerNew %>%
-  ggplot(mapping = aes(x= Season, y = AVG, )) +  
+  #Ploting batting average by season and the points are colored by the team they played for
+  ggplot(mapping = aes(x= Season, y = AVG, color = Team)) +  
+  #adding a limit to the y-axis to see the average better
   ylim(.20,.4) +
-  theme_bw() +
+  #Angling the x-axis to make it easier to read and adding colors to make it stand out 
+  theme(axis.text.x = element_text(angle = 90, color = "red"), axis.text.y = element_text(size = 10, color = "blue"),panel.grid.major = element_line(colour = "grey")) +
   geom_point() +
+  #Titles the graph
   labs(title="Player Batting Average By Season")
- 
+
 
 testplayerNew %>%
-  ggplot(mapping = aes(x= Season, y = HR, )) +  
-  theme_light() +
+  ggplot(mapping = aes(x= Season, y = HR,color = Team )) +  
+  theme(axis.text.x = element_text(angle = 90)) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  geom_smooth(method='lm', formula = y ~ x)+
   geom_point() +
   labs(title="Player Home Runs By Season")
 
 ```
+
+
+
 
