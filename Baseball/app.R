@@ -1,10 +1,12 @@
 
 # Load packages ----------------------------------------------------------------
 
+install.packages("rsconnect")
 library(shiny)
 library(tidyverse)
 library(tools)
 library(tidyverse)
+
 
 # Load data --------------------------------------------------------------------
 
@@ -123,28 +125,28 @@ server <- function(input, output, session) {
         ggplot(data = mvp, aes_string(x = input$x, y = input$y)) +
             geom_point()
     })
-<<<<<<< HEAD
+
     Selected_var <- reactive(mvp[[input$z]])
     Bw <- reactive((max(Selected_var())-min(Selected_var()))/mean(Selected_var()))
     # Scatter of Batting Average density across MVP Hitters
-=======
+
     
     # Histogram of Batting Average density across MVP Hitters
->>>>>>> 545594362618dc2e903280f9da037795d32a5890
+
     output$histogram <- renderPlot({
         mvp %>%
             # Removing pitchers from displayed data
             filter(is.na(ERA)) %>%
             ggplot(mapping = aes_string(x = input$z)) + 
-<<<<<<< HEAD
+
             geom_histogram(binwidth = Bw(), color = "black", fill = "blue") + 
-=======
+
             geom_histogram(
                 binwidth = input$binwidth, 
                 color = "black", 
                 fill = "blue"
                 ) + 
->>>>>>> 545594362618dc2e903280f9da037795d32a5890
+
             geom_density(color = "red") + 
             labs(
                 title = "Batter Stats of MVP Winners",
