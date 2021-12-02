@@ -9,13 +9,28 @@ library(tools)
 
 # load MVP data
 mvp <- as_tibble(read.csv2(here::here("Baseball/CopyOfMVPClean1960_2020")))
-#max(mvp$WAR) - min(mvp$WAR)
+
 # Load Cy Young Data
 cy <- as_tibble(read.csv2(here::here("Baseball/CopyOfCYClean1960_2020")))
+
 # Load Rookie Data
 rook <- as_tibble(read.csv2(here::here("Baseball/CopyOfRookieClean1960_2020")))
 
-sets <- list(mvp, rook)
+# Loading in the teams data for pitchers and batters
+teamsBat <- read_csv2(here::here("Baseball/cleanTeamsBat1900_2020"))
+teamsPitch <- read_csv2(here::here("Baseball/cleanTeamsPitch1900_2020"))
+
+# Loading individual player's data for batters and pitchers
+playerBat <- read_csv2(here::here("Baseball/cleanPlayerBat1960_2020"))
+playerPitch <- read_csv2(here::here("Baseball/cleanPlayerPitch1960_2020"))
+playerPitch
+
+# Save related datasets to lists
+awardSets <- list(mvp, rook, cy)
+
+teamSets <- list(teamsBat, teamsPitch)
+
+playerSets <- list(playerBat, playerPitch)
 
 # Define UI --------------------------------------------------------------------
 
@@ -28,7 +43,7 @@ ui <- fluidPage(
                 inputId = "y",
                 label = "Y-axis:",
                 choices = c(
-                    "Wins Above Replacement" = "WAR",
+                    "Average" = "AVG",
                     "Batting Average" = "BA",
                     "On Base Percentage" = "OBP",
                     "Slugging" = "SLG",
@@ -42,9 +57,8 @@ ui <- fluidPage(
                     "Innings Pitched" = "IP",
                     "Strike Outs" = "SO"
                 ),
-                selected = "WAR"
+                selected = "AVG"
             ),
-            
             
             selectInput(
                 inputId = "x",
@@ -68,20 +82,6 @@ ui <- fluidPage(
             ),
             
             sliderInput(
-                inputId = "alpha",
-                label = "Alpha:",
-                min = 0, max = 1,
-                value = 0.5
-            ),
-            
-            sliderInput(
-                inputId = "size",
-                label = "Size:",
-                min = 0, max = 5,
-                value = 2
-            ),
-            
-            sliderInput(
                 inputId = "binwidth",
                 label = "Bin Width:",
                 min = 0, max = 0.50,
@@ -96,16 +96,6 @@ ui <- fluidPage(
 
             ),
             
-            # textInput(
-            #     inputId = "plot_title",
-            #     label = "Player Stats",
-            #     #        placeholder = "Enter text to be used as plot title"
-            # ),
-            
-            #      actionButton(
-            #        inputId = "update_plot_title",
-            #        label = "Update plot title"
-            #      )
         ),
 
         mainPanel(
@@ -119,22 +109,16 @@ ui <- fluidPage(
 # Define server ----------------------------------------------------------------
 
 server <- function(input, output, session) {
-    # new_plot_title <- eventReactive(
-    #     eventExpr = input$update_plot_title,
-    #     valueExpr = {
-    #         toTitleCase(input$plot_title)
-    #     }
-    # )
     
-    # Generate scatterplot for awardee Statistics# Generate scatterplot for awardee Statistics
+    # Generate scatterplot for player Statistics
     output$scatterplot <- renderPlot({
-        ggplot(data = mvp, aes_string(x = input$x, y = input$y)) +
+        ggplot(data = playerBat, aes_string(x = playerBat$Season, y = input$y)) +
             geom_point()
     })
     
     # Histogram of Batting Average density across MVP Hitters
     output$histogram <- renderPlot({
-        sets[[awardType()]] %>%
+        awardSets[[awardType()]] %>%
             # Removing pitchers from displayed data
             filter(is.na(ERA)) %>%
             ggplot(mapping = aes_string(x = input$z)) + 
@@ -145,7 +129,7 @@ server <- function(input, output, session) {
                 ) + 
             geom_density(color = "red") + 
             labs(
-                title = "Batter Stats of MVP Winners",
+                title = paste0("Stats for ", awardName() , " Winners"),
                 subtitle = "1960 to 2020",
                 caption = "*Excludes Pitchers"
             ) +
@@ -158,6 +142,14 @@ server <- function(input, output, session) {
         a <- switch(input$award,
                     mvp = 1,
                     rook = 2,
+                    1)
+    })
+    
+    awardName <- reactive({
+        a <- switch(input$award,
+                    mvp = "Most Valuable Player",
+                    rook = "Rookie of the Year",
+                    cy = "Cy Young",
                     1)
     })
 }

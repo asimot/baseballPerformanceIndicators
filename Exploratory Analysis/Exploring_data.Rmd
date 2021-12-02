@@ -61,6 +61,14 @@ mvp %>% filter(BA > 0.3) %>% arrange(desc(BA))
 
 
 
+```{r}
+
+teamsBat
+teamsPitch
+playerBat
+playerPitch
+
+```
 
 
 
