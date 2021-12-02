@@ -179,7 +179,7 @@ write_csv2(cleanTeamsPitch, here::here("data_dump/cleanTeamsPitch1900_2020"))
 ```
 
 
-```{r}
+```{r include = FALSE}
 # Reading CSV files for MVP, Cy Young, and Rookie of the year
 MVPdata <- read_csv2(here::here("data_dump/MVP1960_2020"))
 CYdata <- read_csv2(here::here("data_dump/CY1960_2020"))
@@ -194,13 +194,19 @@ MVPC <- MVPdata[2:184,1:17]
 #Dropping the rows that have only NA
 MVPClean <- MVPC %>% drop_na(Year)
 
+MVPClean[, 5:17] <- sapply(MVPClean[, 5:17], as.numeric)
+MVPClean
 ```
+
+
 
 ```{r}
 # Getting last col and years before 1960
 CYC <- CYdata[1:176,1:11]
 #Dropping the rows that have only NA
 CYClean <- CYC %>% drop_na(Year)
+
+CYClean[,5:11] <- sapply(CYClean[, 5:11], as.numeric)
 ```
 
 ```{r}
@@ -210,6 +216,9 @@ colnames(Rookiedata) <-Rookiedata[1,]
 RookieC <- Rookiedata[2:185,1:17]
 #Dropping the rows that have only NA
 RookieClean <- RookieC %>% drop_na(Year)
+
+RookieClean[, 5:17] <- sapply(RookieClean[, 5:17], as.numeric)
+RookieClean
 ```
 
 ```{r}
@@ -220,7 +229,7 @@ write_csv2(MVPClean, here::here("data_dump/MVPClean1960_2020"))
 write_csv2(CYClean, here::here("data_dump/CYClean1960_2020"))
 
 #exporting the cleaned Rookie stats
-write_csv2(RookiedClean, here::here("data_dump/RookieClean1960_2020"))
+write_csv2(RookieClean, here::here("data_dump/RookieClean1960_2020"))
 ```
 
 
