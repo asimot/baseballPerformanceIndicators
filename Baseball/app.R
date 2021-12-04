@@ -25,7 +25,7 @@ teamsPitch <- read_csv2(here::here("Baseball/cleanTeamsPitch1900_2020"))
 # Loading individual player's data for batters and pitchers
 playerBat <- read_csv2(here::here("Baseball/cleanPlayerBat1960_2020"))
 playerPitch <- read_csv2(here::here("Baseball/cleanPlayerPitch1960_2020"))
-playerPitch
+
 
 # Save related datasets to lists
 awardSets <- list(mvp, rook, cy)
@@ -122,10 +122,6 @@ server <- function(input, output, session) {
     Selected_var <- reactive(mvp[[input$z]])
     Bw <- reactive((max(Selected_var())-min(Selected_var()))/mean(Selected_var()))
     # Scatter of Batting Average density across MVP Hitters
-
-    
-    # Histogram of Batting Average density across MVP Hitters
-
 
     
     # Histogram of Batting Average density across MVP Hitters
