@@ -1,0 +1,13 @@
+name: Baseball
+title: Baseball
+username:
+account: garlandjake
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 5271667
+bundleId: 5330878
+url: https://garlandjake.shinyapps.io/Baseball/
+when: 1638740618.15406
+lastSyncTime: 1638740618.15408
+asMultiple: FALSE
+asStatic: FALSE

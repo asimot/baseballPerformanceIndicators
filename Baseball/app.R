@@ -13,36 +13,35 @@ library(dplyr)
 # Load data --------------------------------------------------------------------
 
 # load MVP data
-mvp <- as_tibble(read.csv2(here::here("Baseball/MVPClean1960_2020")))
+#mvp <- as_tibble(read.csv2(here::here("Baseball/MVPClean1960_2020")))
 
 # Load Cy Young Data
-cy <- as_tibble(read.csv2(here::here("Baseball/CYClean1960_2020")))
+#cy <- as_tibble(read.csv2(here::here("Baseball/CYClean1960_2020")))
 
 # Load Rookie Data
-rook <- as_tibble(read.csv2(here::here("Baseball/RookieClean1960_2020")))
+#rook <- as_tibble(read.csv2(here::here("Baseball/RookieClean1960_2020")))
 
 # Loading in the teams data for pitchers and batters
-teamsBat <- read_csv2(here::here("Baseball/cleanTeamsBat1900_2020"))
-teamsPitch <- read_csv2(here::here("Baseball/cleanTeamsPitch1900_2020"))
+#teamsBat <- read_csv2(here::here("Baseball/cleanTeamsBat1900_2020"))
+#teamsPitch <- read_csv2(here::here("Baseball/cleanTeamsPitch1900_2020"))
 
 # Loading individual player's data for batters and pitchers
-playerBat <- read_csv2(here::here("Baseball/cleanPlayerBat1960_2020"))
-playerPitch <- read_csv2(here::here("Baseball/cleanPlayerPitch1960_2020"))
+#playerBat <- read_csv2(here::here("Baseball/cleanPlayerBat1960_2020"))
+#playerPitch <- read_csv2(here::here("Baseball/cleanPlayerPitch1960_2020"))
 
 
 # Save related datasets to lists
-awardSets <- list(mvp, rook, cy)
+#awardSets <- list(mvp, rook, cy)
 
-teamSets <- list(teamsBat, teamsPitch)
+#teamSets <- list(teamsBat, teamsPitch)
 
-playerSets <- list(playerBat, playerPitch)
+#playerSets <- list(playerBat, playerPitch)
 
 # Define UI --------------------------------------------------------------------
 
 ui <- fluidPage(
     sidebarLayout(
         sidebarPanel(
-            mvp <- as_tibble(read.csv2(here::here("Baseball/CopyOfMVPClean1960_2020"))),
             # Input selector for Y-axis
             selectInput(
                 inputId = "baty",
@@ -121,6 +120,30 @@ ui <- fluidPage(
 # Define server ----------------------------------------------------------------
 
 server <- function(input, output, session) {
+    # load MVP data
+    mvp <- as_tibble(read.csv2("MVPClean1960_2020"))
+    
+    # Load Cy Young Data
+    cy <- as_tibble(read.csv2("CYClean1960_2020"))
+    
+    # Load Rookie Data
+    rook <- as_tibble(read.csv2("RookieClean1960_2020"))
+    
+    # Loading in the teams data for pitchers and batters
+    teamsBat <- read_csv2("cleanTeamsBat1900_2020")
+    teamsPitch <- read_csv2("cleanTeamsPitch1900_2020")
+    
+    # Loading individual player's data for batters and pitchers
+    playerBat <- read_csv2("cleanPlayerBat1960_2020")
+    playerPitch <- read_csv2("cleanPlayerPitch1960_2020")
+    
+    
+    # Save related datasets to lists
+    awardSets <- list(mvp, rook, cy)
+    
+    teamSets <- list(teamsBat, teamsPitch)
+    
+    playerSets <- list(playerBat, playerPitch)
     
     # Generate scatterplot for player Statistics
     output$scatterplot <- renderPlot({
