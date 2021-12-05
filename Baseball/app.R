@@ -121,8 +121,6 @@ server <- function(input, output, session) {
 
     Selected_var <- reactive(mvp[[input$z]])
     Bw <- reactive((max(Selected_var())-min(Selected_var()))/mean(Selected_var()))
-    # Scatter of Batting Average density across MVP Hitters
-
     
     # Histogram of Batting Average density across MVP Hitters
 
