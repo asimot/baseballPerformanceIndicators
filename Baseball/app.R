@@ -5,7 +5,10 @@ library(rsconnect)
 library(shiny)
 library(tidyverse)
 library(tools)
-
+library(hash)
+library(ggplot2)
+library(rvest)
+library(dplyr)
 
 # Load data --------------------------------------------------------------------
 
@@ -39,7 +42,7 @@ playerSets <- list(playerBat, playerPitch)
 ui <- fluidPage(
     sidebarLayout(
         sidebarPanel(
-            
+            mvp <- as_tibble(read.csv2(here::here("Baseball/CopyOfMVPClean1960_2020"))),
             # Input selector for Y-axis
             selectInput(
                 inputId = "y",
