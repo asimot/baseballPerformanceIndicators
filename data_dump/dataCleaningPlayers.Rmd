@@ -109,11 +109,38 @@ playerBatClean[,c(1, 4:23)] <- sapply(playerBatClean[,c(1, 4:23)], as.numeric)
 
 ```
 
+to numeric 1, 4:22
+
 ```{r}
 
+# Remove special; characters from column names
+# Remove percentage signs from values and will convert to decimals
+playerPitchClean <- playerPitchClean %>%
+  mutate(LOB = str_replace(`LOB%`, "%", ""),
+         GB = str_replace(`GB%`, "%", ""),
+         HRFB = str_replace(`HR/FB`, "%", ""),
+         vFA = `vFA (pi)`,
+         K9 = `K/9`,
+         BB9 = `BB/9`,
+         HR9 = `HR/9`) %>%
+  select(!c(`LOB%`, `GB%`, `HR/FB`, `vFA (pi)`, `K/9`, `BB/9`, `HR/9`))
+
+playerPitchClean[, c(1, 4:22)] <- sapply(playerPitchClean[, c(1, 4:22)], as.numeric)
+playerPitchClean
+
+```
+
+Converting the LOB, GB, HRFB columns in pitchers to decimals.  Used to be percentages with a % sign in the values, but converting for graphical sakes
+```{r}
+
+playerPitchClean <- playerPitchClean %>%
+  mutate(LOB = LOB / 100,
+         GB = GB / 100,
+         HRFB = HRFB / 100)
 
 
 ```
+
 
 
 ```{r export_data, include=FALSE}
