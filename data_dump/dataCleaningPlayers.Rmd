@@ -95,6 +95,27 @@ playerBatClean
 ```
 
 
+```{r}
+# Reorganize columns before further cleaning
+playerBatClean <- playerBatClean[,2:24]
+playerPitchClean <- playerPitchClean[, 2:23]
+
+```
+
+
+```{r}
+# convert character columns to numeric for graphing
+playerBatClean[,c(1, 4:23)] <- sapply(playerBatClean[,c(1, 4:23)], as.numeric)
+
+```
+
+```{r}
+
+
+
+```
+
+
 ```{r export_data, include=FALSE}
 
 write_csv2(playerBatClean, here::here("data_dump/cleanPlayerBat1960_2020"))
