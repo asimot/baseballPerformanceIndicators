@@ -11,6 +11,8 @@ library(rvest)
 library(dplyr)
 
 # Load data --------------------------------------------------------------------
+# This section is now moved to the server definition.
+# By using loads here we only loaded data locally causing issues in Shiny
 
 # load MVP data
 #mvp <- as_tibble(read.csv2(here::here("Baseball/MVPClean1960_2020")))
@@ -42,7 +44,9 @@ library(dplyr)
 ui <- fluidPage(
     sidebarLayout(
         sidebarPanel(
+            
             # Input selector for Y-axis
+            # This will be play stats scatter plot
             selectInput(
                 inputId = "baty",
                 label = "Batter Statistic:",
@@ -71,15 +75,9 @@ ui <- fluidPage(
                 selected = "AVG"
             ),
             
-            # selectInput(
-            #     inputId = "x",
-            #     label = "Season:",
-            #     choices = c(
-            #         "Season" = "Year"
-            #     ),
-            #     selected = "Year"
-            # ),
-            
+            # Input selector for Distribution of Awardees
+            # Relates to MVP and Rookie of the Year
+            # Cy Young being for pitchers has different stats
             selectInput(
                 inputId = "z",
                 label = "Distribution Selector",
@@ -92,6 +90,7 @@ ui <- fluidPage(
                 selected = "BA"
             ),
             
+            # Used to define the histogram's binwidth for distribution
             sliderInput(
                 inputId = "binwidth",
                 label = "Bin Width:",
@@ -100,17 +99,19 @@ ui <- fluidPage(
                 step = 0.005
             ),
             
+            # Used to select which award category to observe distribution of
             radioButtons(
                 "award", "Select Award Category:",
                 c("Most Valuable Player" = "mvp",
                   "Rookie of the Year" = "rook")
-
             ),
-            
         ),
 
         mainPanel(
+            # Scatter for player stats
             plotOutput(outputId = "scatterplot"),
+            
+            # Distribution of MVP and Rookie stats
             plotOutput(outputId = "histogram")
         )
     )
@@ -140,12 +141,10 @@ server <- function(input, output, session) {
     
     # Save related datasets to lists
     awardSets <- list(mvp, rook, cy)
-    
     teamSets <- list(teamsBat, teamsPitch)
-    
     playerSets <- list(playerBat, playerPitch)
     
-    # Generate scatterplot for player Statistics
+    # Generate scatter plot for player Statistics
     output$scatterplot <- renderPlot({
         ggplot(data = playerBat, 
                aes_string(x = playerBat$Season, y = input$baty)) +
@@ -163,7 +162,7 @@ server <- function(input, output, session) {
 
     output$histogram <- renderPlot({
         awardSets[[awardType()]] %>%
-            # Removing pitchers from displayed data
+            # Removing pitchers from displayed data (extreme outliers)
             filter(is.na(ERA)) %>%
             ggplot(mapping = aes_string(x = input$z)) + 
             geom_histogram(
@@ -182,6 +181,7 @@ server <- function(input, output, session) {
         
     })
     
+    # Reactive to select data set from list based on award type button
     awardType <- reactive({
         a <- switch(input$award,
                     mvp = 1,
@@ -189,6 +189,7 @@ server <- function(input, output, session) {
                     1)
     })
     
+    # Used for titles to give a plot name based on selected award
     awardName <- reactive({
         a <- switch(input$award,
                     mvp = "Most Valuable Player",
