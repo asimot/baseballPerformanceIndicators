@@ -87,11 +87,29 @@ ui <- fluidPage(
                 selected = "BA"
             ),
             
+            # Input selector for Y-axis
+            # This will be play stats scatter plot
+            selectInput(
+                inputId = "Pit",
+                label = "Cy Young Statistic:",
+                choices = c(
+                    "Wins Above Replacement" = "WAR",
+                    "Wins" = "W",
+                    "Loses" = "L",
+                    "Saves" = "SV",
+                    "Earn Run Average" = "ERA",
+                    "Innings Ptched" = "IP",
+                    "Strikeouts" = "SO"
+                ),
+                selected = "W"
+            ),       
+            
+            
             # Used to define the histogram's binwidth for distribution
             sliderInput(
                 inputId = "binwidth",
                 label = "Bin Width:",
-                min = 0, max = 0.50,
+                min = 0.005, max = 10,
                 value = 0.005,
                 step = 0.005
             ),
@@ -100,7 +118,8 @@ ui <- fluidPage(
             radioButtons(
                 "award", "Select Award Category:",
                 c("Most Valuable Player" = "mvp",
-                  "Rookie of the Year" = "rook")
+                  "Rookie of the Year" = "rook",
+                  "Cy Young" = "cy")
             ),
         ),
 
@@ -109,7 +128,10 @@ ui <- fluidPage(
             plotOutput(outputId = "scatterplot"),
             
             # Distribution of MVP and Rookie stats
-            plotOutput(outputId = "histogram")
+            plotOutput(outputId = "histogram"),
+            
+            # Distribution of Cy Young
+            plotOutput(outputId = "Pitcher")
         )
     )
 )
@@ -158,31 +180,49 @@ server <- function(input, output, session) {
     # Histogram of Batting Average density across MVP Hitters
 
     output$histogram <- renderPlot({
-        awardSets[[awardType()]] %>%
+            if(awardType() == 3) {
+                awardSets[[awardType()]] %>%
+                ggplot(mapping = aes_string(x = input$Pit)) + 
+                    geom_histogram(
+                        binwidth = input$binwidth, 
+                        color = "black", 
+                        fill = "blue"
+                    ) + 
+                    labs(
+                        title = paste0("Stats for ", awardName() , " Winners"),
+                        subtitle = "1960 to 2020",
+                    ) +
+                    xlab(input$Pit) + 
+                    ylab("Count")
+                
+            }
+            else{
+                awardSets[[awardType()]] %>%
             # Removing pitchers from displayed data (extreme outliers)
-            filter(is.na(ERA)) %>%
-            ggplot(mapping = aes_string(x = input$z)) + 
-            geom_histogram(
-                binwidth = input$binwidth, 
-                color = "black", 
-                fill = "blue"
-                ) + 
-            geom_density(color = "red") + 
-            labs(
-                title = paste0("Stats for ", awardName() , " Winners"),
-                subtitle = "1960 to 2020",
-                caption = "*Excludes Pitchers"
-            ) +
-            xlab(input$z) + 
-            ylab("Count")
-        
+                filter(is.na(ERA)) %>%
+                ggplot(mapping = aes_string(x = input$z)) + 
+                geom_histogram(
+                    binwidth = input$binwidth, 
+                    color = "black", 
+                    fill = "blue"
+                 ) + 
+                labs(
+                  title = paste0("Stats for ", awardName() , " Winners"),
+                 subtitle = "1960 to 2020",
+                    caption = "*Excludes Pitchers"
+             ) +
+                xlab(input$z) + 
+                ylab("Count")
+            }
     })
+
     
     # Reactive to select data set from list based on award type button
     awardType <- reactive({
         a <- switch(input$award,
                     mvp = 1,
                     rook = 2,
+                    cy = 3,
                     1)
     })
     
