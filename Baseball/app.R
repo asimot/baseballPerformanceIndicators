@@ -6,9 +6,6 @@ library(shiny)
 library(tidyverse)
 library(tools)
 library(hash)
-library(ggplot2)
-library(rvest)
-library(dplyr)
 
 # Load data --------------------------------------------------------------------
 # This section is now moved to the server definition.
