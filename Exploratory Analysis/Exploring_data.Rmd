@@ -11,6 +11,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r libraries, include = FALSE}
 library(tidyverse)
+library(reactable)
+library(paletteer)
 ```
 
 
@@ -22,13 +24,6 @@ playerPitch <- read_csv2(here::here("data_dump/cleanPlayerPitch1960_2020"))
 cyyoung <- read_csv2(here::here("data_dump/CYClean1960_2020"))
 mvp <- read_csv2(here::here("data_dump/MVPClean1960_2020"))
 rook <- read_csv2(here::here("data_dump/RookieClean1960_2020"))
-
-```
-
-```{r}
-sets <- list(mvp, rook, cyyoung)
-
-sets[[1]]
 
 ```
 
@@ -71,6 +66,20 @@ playerPitch
 ```
 
 
+```{r}
+
+reactable(playerBat,
+          defaultColDef = colDef(align = "center"),
+          sortable = TRUE,
+          resizable = TRUE,
+          filterable = TRUE,
+          searchable = TRUE,
+          pagination = TRUE,
+          defaultSorted = c("Season", "Name")
+)
+
+
+```
 
 
 
