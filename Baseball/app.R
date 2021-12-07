@@ -6,6 +6,7 @@ library(shiny)
 library(tidyverse)
 library(tools)
 library(hash)
+library(reactable)
 
 # Load data --------------------------------------------------------------------
 # This section is now moved to the server definition.
@@ -130,8 +131,13 @@ ui <- fluidPage(
             # Distribution of MVP and Rookie stats
             plotOutput(outputId = "histogram"),
             
+<<<<<<< HEAD
             # Distribution of Cy Young
             plotOutput(outputId = "Pitcher")
+=======
+            # Searchable player stats
+            reactableOutput(outputId = "playerTable")
+>>>>>>> e839a2068838091c5fc99fc53270907685fff595
         )
     )
 )
@@ -234,6 +240,18 @@ server <- function(input, output, session) {
                     cy = "Cy Young",
                     1)
     })
+    
+    output$playerTable <- renderReactable(
+        reactable(playerBat,
+                  defaultColDef = colDef(align = "center"),
+                  sortable = TRUE,
+                  resizable = TRUE,
+                  filterable = TRUE,
+                  searchable = TRUE,
+                  pagination = TRUE,
+                  defaultSorted = c("Season", "Name")
+        )
+    )
 }
 
 # Create the Shiny app object --------------------------------------------------
