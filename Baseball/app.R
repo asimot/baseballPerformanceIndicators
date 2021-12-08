@@ -9,35 +9,6 @@ library(reactable)
 library(reactablefmtr)
 library(shinythemes)
 
-# Load data --------------------------------------------------------------------
-# This section is now moved to the server definition.
-# By using loads here we only loaded data locally causing issues in Shiny
-
-# load MVP data
-#mvp <- as_tibble(read.csv2(here::here("Baseball/MVPClean1960_2020")))
-
-# Load Cy Young Data
-#cy <- as_tibble(read.csv2(here::here("Baseball/CYClean1960_2020")))
-
-# Load Rookie Data
-#rook <- as_tibble(read.csv2(here::here("Baseball/RookieClean1960_2020")))
-
-# Loading in the teams data for pitchers and batters
-#teamsBat <- read_csv2(here::here("Baseball/cleanTeamsBat1900_2020"))
-#teamsPitch <- read_csv2(here::here("Baseball/cleanTeamsPitch1900_2020"))
-
-# Loading individual player's data for batters and pitchers
-#playerBat <- read_csv2(here::here("Baseball/cleanPlayerBat1960_2020"))
-#playerPitch <- read_csv2(here::here("Baseball/cleanPlayerPitch1960_2020"))
-
-
-# Save related datasets to lists
-#awardSets <- list(mvp, rook, cy)
-
-#teamSets <- list(teamsBat, teamsPitch)
-
-#playerSets <- list(playerBat, playerPitch)
-
 # Define UI --------------------------------------------------------------------
 
 ui <- fluidPage(
@@ -47,6 +18,8 @@ ui <- fluidPage(
     
     sidebarLayout(
         sidebarPanel(
+            # MLB logo Image
+            # image credit : https://en.wikipedia.org/wiki/Major_League_Baseball_logo
             img(src = "MLB_logo.png", height = 100, width = 200, align = "center"),
             
             
@@ -141,13 +114,7 @@ ui <- fluidPage(
         ),
 
         mainPanel(
-            # MLB logo Image
-            # image credit : https://en.wikipedia.org/wiki/Major_League_Baseball_logo
-            # img(src = "MLB_logo.png", height = 100, width = 200, align = "center"),
-            
-            # Scatter for player stats
-            # plotOutput(outputId = "scatterplot"),
-            
+          
             # Distribution of player stats by year
             plotOutput(outputId = "playerDistrib"),
             
@@ -192,20 +159,6 @@ server <- function(input, output, session) {
     teamSets <- list(teamsBat, teamsPitch)
     playerSets <- list(playerBat, playerPitch)
     
-    # Generate scatter plot for player Statistics
-    # output$scatterplot <- renderPlot({
-    #     ggplot(data = playerBat, 
-    #            aes_string(x = playerBat$Season, y = input$baty)) +
-    #         geom_point() + 
-    #         labs(
-    #             title = paste0("Batter Stats For ", str_replace_all(input$baty, "`", "")),
-    #             subtitle = "1960 to 2020"
-    #         ) + 
-    #         xlab("Season") +
-    #         ylab(str_replace_all(input$baty, "`", ""))
-    # })
-
-
     # Histogram of Batting Average density across MVP Hitters
 
     output$awardees <- renderPlot({
