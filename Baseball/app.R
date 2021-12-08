@@ -130,14 +130,13 @@ ui <- fluidPage(
             
             # Distribution of MVP and Rookie stats
             plotOutput(outputId = "histogram"),
-            
 <<<<<<< HEAD
-            # Distribution of Cy Young
-            plotOutput(outputId = "Pitcher")
 =======
+
             # Searchable player stats
             reactableOutput(outputId = "playerTable")
 >>>>>>> e839a2068838091c5fc99fc53270907685fff595
+
         )
     )
 )
