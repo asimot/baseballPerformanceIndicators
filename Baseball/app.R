@@ -123,23 +123,23 @@ ui <- fluidPage(
             plotOutput(outputId = "playerDistrib"),
             
             # Distribution of MVP and Rookie stats
-<<<<<<< HEAD
+
             plotOutput(outputId = "histogram"),
 
             # Searchable player stats
-            reactableOutput(outputId = "playerTable")
+            reactableOutput(outputId = "playerTable"),
 
-=======
+
             plotOutput(outputId = "awardees"),
             
-            strong("Searchable Individual Batter Statistics", align = "center"),
+            strong("Searchable Individual Batter Statistics Data sourced from Fangraphs.com", align = "center"),
             # Searchable player batting stats
             reactableOutput(outputId = "playerBatTable"),
             
-            strong("Searchable Individual Pitcher Statistics", align = "center"),
+            strong("Searchable Individual Pitcher Statistics Data sourced from Fangraphs.com", align = "center"),
             # Searchable player pitching stats
             reactableOutput(outputId = "playerPitchTable")
->>>>>>> bdbb85dadd42bc6318455377fcbc52ba34b3c373
+
         )
     )
 )
@@ -185,6 +185,7 @@ server <- function(input, output, session) {
                     labs(
                         title = paste0("Stats for ", awardName() , " Winners"),
                         subtitle = "1960 to 2020",
+                        caption = "*Data sourced from Baseballrefrence.com"
                     ) +
                     xlab(input$Pit) + 
                     ylab("Count") +
@@ -193,6 +194,7 @@ server <- function(input, output, session) {
                     theme(plot.background = element_rect(fill = "black"), 
                           plot.title = element_text(color = "white"),
                           plot.subtitle = element_text(color = "white"),
+                          plot.caption = element_text(color = "white"),
                           axis.title = element_text(color = "white"),
                           axis.text = element_text(color = "white"))
                 
@@ -210,7 +212,8 @@ server <- function(input, output, session) {
                 labs(
                   title = paste0("Stats for ", awardName() , " Winners"),
                  subtitle = "1960 to 2020",
-                    caption = "*Excludes Pitchers"
+                    caption = "*Excludes Pitchers
+                 Data sourced from Baseballrefrence.com"
                 ) +
                 xlab(input$z) + 
                 ylab("Count") +
@@ -289,7 +292,8 @@ server <- function(input, output, session) {
             geom_boxplot(outlier.alpha = 0, color = "red", fill = "orange", alpha = 0.4) +
             geom_jitter(color = "yellow") +
             labs(
-                title = paste0("Distribution of ", input$baty , " Among Batters")
+                title = paste0("Distribution of ", input$baty , " Among Batters"),
+                caption = "Data Source from Fangraphs.com"
             ) +
             xlab(paste0("Year : ", num_yr())) + 
             ylab(input$baty) +
@@ -300,6 +304,7 @@ server <- function(input, output, session) {
                   plot.subtitle = element_text(color = "white"),
                   axis.title = element_text(color = "white"),
                   axis.text = element_text(color = "white"),
+                  plot.caption = element_text(color = "white"),
                   axis.text.x = element_blank(),
                   axis.ticks.x = element_blank())
     )
