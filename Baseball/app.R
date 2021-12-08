@@ -238,7 +238,11 @@ server <- function(input, output, session) {
     
     # Only use integer inputs for year
     num_yr <- reactive({
-        floor(input$yr)
+        res <- case_when(
+            input$yr < 1960 ~ 1960,
+            input$yr > 2020 ~ 2020,
+            TRUE ~ floor(input$yr)
+        )
     })
     
     # Searchable table for Batter Statistics
