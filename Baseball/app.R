@@ -121,7 +121,8 @@ ui <- fluidPage(
           
             # Distribution of player stats by year
             plotOutput(outputId = "playerDistrib"),
-
+            
+            # Awardee distribution histogram
             plotOutput(outputId = "awardees"),
             
             strong("Searchable Individual Batter Statistics", align = "center"),
