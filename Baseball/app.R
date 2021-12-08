@@ -122,31 +122,16 @@ ui <- fluidPage(
             # Distribution of player stats by year
             plotOutput(outputId = "playerDistrib"),
             
-<<<<<<< HEAD
-            # Distribution of MVP and Rookie stats
-
-            plotOutput(outputId = "histogram"),
-
-            # Searchable player stats
-            reactableOutput(outputId = "playerTable"),
-
-
-=======
             # Awardee distribution histogram
->>>>>>> eb62985516a181fcfc6a0d9bdc6358f637c12445
             plotOutput(outputId = "awardees"),
             
-            strong("Searchable Individual Batter Statistics Data sourced from Fangraphs.com", align = "center"),
+            strong("Searchable Individual Batter Statistics [Data sourced from Fangraphs.com]", align = "center"),
             # Searchable player batting stats
             reactableOutput(outputId = "playerBatTable"),
             
-            strong("Searchable Individual Pitcher Statistics Data sourced from Fangraphs.com", align = "center"),
+            strong("Searchable Individual Pitcher Statistics [Data sourced from Fangraphs.com]", align = "center"),
             # Searchable player pitching stats
             reactableOutput(outputId = "playerPitchTable")
-<<<<<<< HEAD
-
-=======
->>>>>>> eb62985516a181fcfc6a0d9bdc6358f637c12445
         )
     )
 )
