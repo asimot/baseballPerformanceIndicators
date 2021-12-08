@@ -123,6 +123,13 @@ ui <- fluidPage(
             plotOutput(outputId = "playerDistrib"),
             
             # Distribution of MVP and Rookie stats
+<<<<<<< HEAD
+            plotOutput(outputId = "histogram"),
+
+            # Searchable player stats
+            reactableOutput(outputId = "playerTable")
+
+=======
             plotOutput(outputId = "awardees"),
             
             strong("Searchable Individual Batter Statistics", align = "center"),
@@ -132,6 +139,7 @@ ui <- fluidPage(
             strong("Searchable Individual Pitcher Statistics", align = "center"),
             # Searchable player pitching stats
             reactableOutput(outputId = "playerPitchTable")
+>>>>>>> bdbb85dadd42bc6318455377fcbc52ba34b3c373
         )
     )
 )
