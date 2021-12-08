@@ -53,6 +53,7 @@ ui <- fluidPage(
                 selected = "AVG"
             ),
             
+            # Numeric input for year 
             numericInput(
                 inputId = "yr",
                 label = "Year:",
@@ -111,6 +112,9 @@ ui <- fluidPage(
                   "Rookie of the Year" = "rook",
                   "Cy Young" = "cy")
             ),
+            
+            # Submit button for user designated refreshing versus live refresh
+            submitButton(text = "Refresh Graphics", icon("refresh"))
         ),
 
         mainPanel(
@@ -176,6 +180,7 @@ server <- function(input, output, session) {
                     ) +
                     xlab(input$Pit) + 
                     ylab("Count") +
+                    # Styling the plot
                     theme_dark() + 
                     theme(plot.background = element_rect(fill = "black"), 
                           plot.title = element_text(color = "white"),
@@ -201,6 +206,7 @@ server <- function(input, output, session) {
                 ) +
                 xlab(input$z) + 
                 ylab("Count") +
+                # Styling the plot
                 theme_dark() + 
                 theme(plot.background = element_rect(fill = "black"), 
                       plot.title = element_text(color = "white"),
@@ -230,6 +236,12 @@ server <- function(input, output, session) {
                     1)
     })
     
+    # Only use integer inputs for year
+    num_yr <- reactive({
+        floor(input$yr)
+    })
+    
+    # Searchable table for Batter Statistics
     output$playerBatTable <- renderReactable(
         reactable(playerBat,
                   defaultColDef = colDef(align = "center"),
@@ -244,6 +256,8 @@ server <- function(input, output, session) {
                   theme = cyborg()
         )
     )
+    
+    # Searchable table for Pitchers Statistics
     output$playerPitchTable <- renderReactable(
         reactable(playerPitch,
                   defaultColDef = colDef(align = "center"),
@@ -259,17 +273,19 @@ server <- function(input, output, session) {
         )
     )
     
+    # Box plot for descriptive statistics on batters
     output$playerDistrib <- renderPlot(
         playerBat %>%
-            filter(Season == input$yr) %>%
-            ggplot(mapping = aes_string(x = input$yr, y = input$baty)) + 
+            filter(Season == num_yr()) %>%
+            ggplot(mapping = aes_string(x = num_yr(), y = input$baty)) + 
             geom_boxplot(outlier.alpha = 0, color = "red", fill = "orange", alpha = 0.4) +
             geom_jitter(color = "yellow") +
             labs(
                 title = paste0("Distribution of ", input$baty , " Among Batters")
             ) +
-            xlab(paste0("Year : ", input$yr)) + 
+            xlab(paste0("Year : ", num_yr())) + 
             ylab(input$baty) +
+            # Styling the plot
             theme_dark() + 
             theme(plot.background = element_rect(fill = "black"), 
                   plot.title = element_text(color = "white"),
