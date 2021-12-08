@@ -5,46 +5,26 @@ library(rsconnect)
 library(shiny)
 library(tidyverse)
 library(tools)
-library(hash)
 library(reactable)
-
-# Load data --------------------------------------------------------------------
-# This section is now moved to the server definition.
-# By using loads here we only loaded data locally causing issues in Shiny
-
-# load MVP data
-#mvp <- as_tibble(read.csv2(here::here("Baseball/MVPClean1960_2020")))
-
-# Load Cy Young Data
-#cy <- as_tibble(read.csv2(here::here("Baseball/CYClean1960_2020")))
-
-# Load Rookie Data
-#rook <- as_tibble(read.csv2(here::here("Baseball/RookieClean1960_2020")))
-
-# Loading in the teams data for pitchers and batters
-#teamsBat <- read_csv2(here::here("Baseball/cleanTeamsBat1900_2020"))
-#teamsPitch <- read_csv2(here::here("Baseball/cleanTeamsPitch1900_2020"))
-
-# Loading individual player's data for batters and pitchers
-#playerBat <- read_csv2(here::here("Baseball/cleanPlayerBat1960_2020"))
-#playerPitch <- read_csv2(here::here("Baseball/cleanPlayerPitch1960_2020"))
-
-
-# Save related datasets to lists
-#awardSets <- list(mvp, rook, cy)
-
-#teamSets <- list(teamsBat, teamsPitch)
-
-#playerSets <- list(playerBat, playerPitch)
+library(reactablefmtr)
+library(shinythemes)
 
 # Define UI --------------------------------------------------------------------
 
 ui <- fluidPage(
+    # Shiny app title
+    titlePanel("Baseball Performance Statistics 1960-2020"),
+    theme = shinytheme("cyborg"),
+    
     sidebarLayout(
         sidebarPanel(
+            # MLB logo Image
+            # image credit : https://en.wikipedia.org/wiki/Major_League_Baseball_logo
+            img(src = "MLB_logo.png", height = 100, width = 200, align = "center"),
+            
             
             # Input selector for Y-axis
-            # This will be play stats scatter plot
+            # This will be play stats box plot
             selectInput(
                 inputId = "baty",
                 label = "Batter Statistic:",
@@ -72,6 +52,16 @@ ui <- fluidPage(
                 ),
                 selected = "AVG"
             ),
+            
+            # Numeric input for year 
+            numericInput(
+                inputId = "yr",
+                label = "Year:",
+                min = 1960, max = 2020,
+                value = 2020,
+                step = 1
+            ),
+            
             
             # Input selector for Distribution of Awardees
             # Relates to MVP and Rookie of the Year
@@ -122,18 +112,34 @@ ui <- fluidPage(
                   "Rookie of the Year" = "rook",
                   "Cy Young" = "cy")
             ),
+            
+            # Submit button for user designated refreshing versus live refresh
+            submitButton(text = "Refresh Graphics", icon("refresh"))
         ),
 
         mainPanel(
-            # Scatter for player stats
-            plotOutput(outputId = "scatterplot"),
+          
+            # Distribution of player stats by year
+            plotOutput(outputId = "playerDistrib"),
             
             # Distribution of MVP and Rookie stats
+<<<<<<< HEAD
             plotOutput(outputId = "histogram"),
 
             # Searchable player stats
             reactableOutput(outputId = "playerTable")
 
+=======
+            plotOutput(outputId = "awardees"),
+            
+            strong("Searchable Individual Batter Statistics", align = "center"),
+            # Searchable player batting stats
+            reactableOutput(outputId = "playerBatTable"),
+            
+            strong("Searchable Individual Pitcher Statistics", align = "center"),
+            # Searchable player pitching stats
+            reactableOutput(outputId = "playerPitchTable")
+>>>>>>> bdbb85dadd42bc6318455377fcbc52ba34b3c373
         )
     )
 )
@@ -165,37 +171,30 @@ server <- function(input, output, session) {
     teamSets <- list(teamsBat, teamsPitch)
     playerSets <- list(playerBat, playerPitch)
     
-    # Generate scatter plot for player Statistics
-    output$scatterplot <- renderPlot({
-        ggplot(data = playerBat, 
-               aes_string(x = playerBat$Season, y = input$baty)) +
-            geom_point() + 
-            labs(
-                title = paste0("Batter Stats For ", str_replace_all(input$baty, "`", "")),
-                subtitle = "1960 to 2020"
-            ) + 
-            xlab("Season") +
-            ylab(str_replace_all(input$baty, "`", ""))
-    })
-
-
     # Histogram of Batting Average density across MVP Hitters
 
-    output$histogram <- renderPlot({
+    output$awardees <- renderPlot({
             if(awardType() == 3) {
                 awardSets[[awardType()]] %>%
                 ggplot(mapping = aes_string(x = input$Pit)) + 
                     geom_histogram(
                         binwidth = input$binwidth, 
                         color = "black", 
-                        fill = "blue"
+                        fill = "red"
                     ) + 
                     labs(
                         title = paste0("Stats for ", awardName() , " Winners"),
                         subtitle = "1960 to 2020",
                     ) +
                     xlab(input$Pit) + 
-                    ylab("Count")
+                    ylab("Count") +
+                    # Styling the plot
+                    theme_dark() + 
+                    theme(plot.background = element_rect(fill = "black"), 
+                          plot.title = element_text(color = "white"),
+                          plot.subtitle = element_text(color = "white"),
+                          axis.title = element_text(color = "white"),
+                          axis.text = element_text(color = "white"))
                 
             }
             else{
@@ -206,15 +205,23 @@ server <- function(input, output, session) {
                 geom_histogram(
                     binwidth = input$binwidth, 
                     color = "black", 
-                    fill = "blue"
+                    fill = "red"
                  ) + 
                 labs(
                   title = paste0("Stats for ", awardName() , " Winners"),
                  subtitle = "1960 to 2020",
                     caption = "*Excludes Pitchers"
-             ) +
+                ) +
                 xlab(input$z) + 
-                ylab("Count")
+                ylab("Count") +
+                # Styling the plot
+                theme_dark() + 
+                theme(plot.background = element_rect(fill = "black"), 
+                      plot.title = element_text(color = "white"),
+                      plot.subtitle = element_text(color = "white"),
+                      plot.caption = element_text(color = "white"),
+                      axis.title = element_text(color = "white"),
+                      axis.text = element_text(color = "white"))
             }
     })
 
@@ -237,7 +244,13 @@ server <- function(input, output, session) {
                     1)
     })
     
-    output$playerTable <- renderReactable(
+    # Only use integer inputs for year
+    num_yr <- reactive({
+        floor(input$yr)
+    })
+    
+    # Searchable table for Batter Statistics
+    output$playerBatTable <- renderReactable(
         reactable(playerBat,
                   defaultColDef = colDef(align = "center"),
                   sortable = TRUE,
@@ -245,8 +258,50 @@ server <- function(input, output, session) {
                   filterable = TRUE,
                   searchable = TRUE,
                   pagination = TRUE,
-                  defaultSorted = c("Season", "Name")
+                  defaultSorted = c("Season", "Name"),
+                  bordered = TRUE,
+                  striped = TRUE,
+                  theme = cyborg()
         )
+    )
+    
+    # Searchable table for Pitchers Statistics
+    output$playerPitchTable <- renderReactable(
+        reactable(playerPitch,
+                  defaultColDef = colDef(align = "center"),
+                  sortable = TRUE,
+                  resizable = TRUE,
+                  filterable = TRUE,
+                  searchable = TRUE,
+                  pagination = TRUE,
+                  defaultSorted = c("Season", "Name"),
+                  bordered = TRUE,
+                  striped = TRUE,
+                  theme = cyborg()
+        )
+    )
+    
+    # Box plot for descriptive statistics on batters
+    output$playerDistrib <- renderPlot(
+        playerBat %>%
+            filter(Season == num_yr()) %>%
+            ggplot(mapping = aes_string(x = num_yr(), y = input$baty)) + 
+            geom_boxplot(outlier.alpha = 0, color = "red", fill = "orange", alpha = 0.4) +
+            geom_jitter(color = "yellow") +
+            labs(
+                title = paste0("Distribution of ", input$baty , " Among Batters")
+            ) +
+            xlab(paste0("Year : ", num_yr())) + 
+            ylab(input$baty) +
+            # Styling the plot
+            theme_dark() + 
+            theme(plot.background = element_rect(fill = "black"), 
+                  plot.title = element_text(color = "white"),
+                  plot.subtitle = element_text(color = "white"),
+                  axis.title = element_text(color = "white"),
+                  axis.text = element_text(color = "white"),
+                  axis.text.x = element_blank(),
+                  axis.ticks.x = element_blank())
     )
 }
 
