@@ -122,6 +122,7 @@ ui <- fluidPage(
             # Distribution of player stats by year
             plotOutput(outputId = "playerDistrib"),
             
+<<<<<<< HEAD
             # Distribution of MVP and Rookie stats
 
             plotOutput(outputId = "histogram"),
@@ -130,6 +131,9 @@ ui <- fluidPage(
             reactableOutput(outputId = "playerTable"),
 
 
+=======
+            # Awardee distribution histogram
+>>>>>>> eb62985516a181fcfc6a0d9bdc6358f637c12445
             plotOutput(outputId = "awardees"),
             
             strong("Searchable Individual Batter Statistics Data sourced from Fangraphs.com", align = "center"),
@@ -139,7 +143,10 @@ ui <- fluidPage(
             strong("Searchable Individual Pitcher Statistics Data sourced from Fangraphs.com", align = "center"),
             # Searchable player pitching stats
             reactableOutput(outputId = "playerPitchTable")
+<<<<<<< HEAD
 
+=======
+>>>>>>> eb62985516a181fcfc6a0d9bdc6358f637c12445
         )
     )
 )
@@ -249,7 +256,11 @@ server <- function(input, output, session) {
     
     # Only use integer inputs for year
     num_yr <- reactive({
-        floor(input$yr)
+        res <- case_when(
+            input$yr < 1960 ~ 1960,
+            input$yr > 2020 ~ 2020,
+            TRUE ~ floor(input$yr)
+        )
     })
     
     # Searchable table for Batter Statistics
