@@ -48,36 +48,46 @@ ui <- fluidPage(
     sidebarLayout(
         sidebarPanel(
             img(src = "MLB_logo.png", height = 100, width = 200, align = "center"),
-            # Scatterplot does not show valuable information, removing
+            
+            
             # Input selector for Y-axis
-            # This will be play stats scatter plot
-            # selectInput(
-            #     inputId = "baty",
-            #     label = "Batter Statistic:",
-            #     choices = c(
-            #         "Games Played" = "G",
-            #         "Plate Appearances" = "PA",
-            #         "At Bats" = "AB",
-            #         "Runs Scored" = "R",
-            #         "Hits" = "H",
-            #         "Singles Hit" = "`1B`",
-            #         "Doubles Hit" = "`2B`",
-            #         "Triples Hit" = "`3B`",
-            #         "Home Runs Hit" = "HR",
-            #         "Runs Batted In" = "RBI",
-            #         "Stolen Bases" = "SB",
-            #         "Caught Stealing" = "CS",
-            #         "Bases on Balls" = "BB",
-            #         "Strikeouts" = "SO",
-            #         "Double Plays Grounded Into" = "GDP",
-            #         "Times Hit by Pitch" = "HBP",
-            #         "Sacrifice Hits" = "SH",
-            #         "Sacrifice Flies" = "SF",
-            #         "Intentional Bases on Balls" = "IBB",
-            #         "Battting Average" = "AVG"
-            #     ),
-            #     selected = "AVG"
-            # ),
+            # This will be play stats box plot
+            selectInput(
+                inputId = "baty",
+                label = "Batter Statistic:",
+                choices = c(
+                    "Games Played" = "G",
+                    "Plate Appearances" = "PA",
+                    "At Bats" = "AB",
+                    "Runs Scored" = "R",
+                    "Hits" = "H",
+                    "Singles Hit" = "`1B`",
+                    "Doubles Hit" = "`2B`",
+                    "Triples Hit" = "`3B`",
+                    "Home Runs Hit" = "HR",
+                    "Runs Batted In" = "RBI",
+                    "Stolen Bases" = "SB",
+                    "Caught Stealing" = "CS",
+                    "Bases on Balls" = "BB",
+                    "Strikeouts" = "SO",
+                    "Double Plays Grounded Into" = "GDP",
+                    "Times Hit by Pitch" = "HBP",
+                    "Sacrifice Hits" = "SH",
+                    "Sacrifice Flies" = "SF",
+                    "Intentional Bases on Balls" = "IBB",
+                    "Battting Average" = "AVG"
+                ),
+                selected = "AVG"
+            ),
+            
+            numericInput(
+                inputId = "yr",
+                label = "Year:",
+                min = 1960, max = 2020,
+                value = 2020,
+                step = 1
+            ),
+            
             
             # Input selector for Distribution of Awardees
             # Relates to MVP and Rookie of the Year
@@ -137,6 +147,9 @@ ui <- fluidPage(
             
             # Scatter for player stats
             # plotOutput(outputId = "scatterplot"),
+            
+            # Distribution of player stats by year
+            plotOutput(outputId = "playerDistrib"),
             
             # Distribution of MVP and Rookie stats
             plotOutput(outputId = "awardees"),
@@ -291,6 +304,27 @@ server <- function(input, output, session) {
                   striped = TRUE,
                   theme = cyborg()
         )
+    )
+    
+    output$playerDistrib <- renderPlot(
+        playerBat %>%
+            filter(Season == input$yr) %>%
+            ggplot(mapping = aes_string(x = input$yr, y = input$baty)) + 
+            geom_boxplot(outlier.alpha = 0, color = "red", fill = "orange", alpha = 0.4) +
+            geom_jitter(color = "yellow") +
+            labs(
+                title = paste0("Distribution of ", input$baty , " Among Batters")
+            ) +
+            xlab(paste0("Year : ", input$yr)) + 
+            ylab(input$baty) +
+            theme_dark() + 
+            theme(plot.background = element_rect(fill = "black"), 
+                  plot.title = element_text(color = "white"),
+                  plot.subtitle = element_text(color = "white"),
+                  axis.title = element_text(color = "white"),
+                  axis.text = element_text(color = "white"),
+                  axis.text.x = element_blank(),
+                  axis.ticks.x = element_blank())
     )
 }
 
