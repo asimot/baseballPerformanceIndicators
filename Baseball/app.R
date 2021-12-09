@@ -62,6 +62,14 @@ ui <- fluidPage(
                 step = 1
             ),
             
+            # sliderInput(
+            #     inputId = "yr",
+            #     label = "Years:",
+            #     min = 1960, max = 2020,
+            #     value = c(2000, 2020),
+            #     step = 1
+            # ),
+            
             
             # Input selector for Distribution of Awardees
             # Relates to MVP and Rookie of the Year
@@ -125,11 +133,14 @@ ui <- fluidPage(
             # Awardee distribution histogram
             plotOutput(outputId = "awardees"),
             
-            strong("Searchable Individual Batter Statistics [Data sourced from Fangraphs.com]", align = "center"),
+            h1(" "),
+            h1("Searhable Data"),
+            strong("Individual Batter Statistics [Data sourced from Fangraphs.com]", align = "center"),
             # Searchable player batting stats
             reactableOutput(outputId = "playerBatTable"),
             
-            strong("Searchable Individual Pitcher Statistics [Data sourced from Fangraphs.com]", align = "center"),
+            h1(" "),
+            strong("Individual Pitcher Statistics [Data sourced from Fangraphs.com]", align = "center"),
             # Searchable player pitching stats
             reactableOutput(outputId = "playerPitchTable")
         )
@@ -255,7 +266,6 @@ server <- function(input, output, session) {
                   sortable = TRUE,
                   resizable = TRUE,
                   filterable = TRUE,
-                  searchable = TRUE,
                   pagination = TRUE,
                   defaultSorted = c("Season", "Name"),
                   bordered = TRUE,
@@ -271,7 +281,6 @@ server <- function(input, output, session) {
                   sortable = TRUE,
                   resizable = TRUE,
                   filterable = TRUE,
-                  searchable = TRUE,
                   pagination = TRUE,
                   defaultSorted = c("Season", "Name"),
                   bordered = TRUE,
