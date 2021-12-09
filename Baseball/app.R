@@ -143,11 +143,6 @@ ui <- fluidPage(
             strong("Individual Pitcher Statistics [Data sourced from Fangraphs.com]", align = "center"),
             # Searchable player pitching stats
             reactableOutput(outputId = "playerPitchTable")
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 277148d337ba91b8a108ce1ad9bf4d0574ae62c0
 
         )
     )
