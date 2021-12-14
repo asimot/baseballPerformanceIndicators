@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(reactable)
 library(paletteer)
+library(vtable)
 ```
 
 
@@ -27,8 +28,18 @@ rook <- read_csv2(here::here("data_dump/RookieClean1960_2020"))
 
 ```
 
+Summary Table for Batting Players
+```{r}
+sumtable(data = playerBat,
+   vars = c("G", "HR", "RBI", "AVG", "1B", "2B", "3B"),
+   title = "Summary Statistics for Batters in MLB",
+   note = "Data for 1960-2020",
+   summ = c("notNA(x)", "mean(x)", "median(x)", "min(x)", "max(x)"),
+   summ.names = c("Observations", "Mean", "Median", "Min", "Max"),
+   labels = c("Games Played", "Home Runs", "Runs Batted In", "Batting Average", 
+              "Singles Hit", "Doubles Hit", "Triples Hit"))
 
-
+```
 
 
 ```{r message = FALSE}
